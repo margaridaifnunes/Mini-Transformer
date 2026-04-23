@@ -1,6 +1,6 @@
-# Mini-Transformer-em-RISC-V-
+# Mini-Transformer-
 Project for Introduction to Computer Architecture
 
-1st delivery:
-2nd delivery:
-3rd delivery:
+1st delivery: \n
+2nd delivery: \n
+3rd delivery: \n
