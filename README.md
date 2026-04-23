@@ -1,4 +1,4 @@
-# Mini-Transformer-
+# Mini-Transformer
 Project for Introduction to Computer Architecture
 
 1st delivery:
