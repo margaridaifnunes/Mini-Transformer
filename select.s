@@ -32,16 +32,13 @@ exit:
 #     this function terminates the program with error code 51
 # ===========================================================================
 select:
-  bge a2, a1, exit_with_error  # if element index >= array length
+  bge a2, a1, code51  # if element index >= array length
+  blt a2, zero, code51  # if element index < 0 
   
   slli t0, a2, 2    # multiplies by 2^2
-  add t0, a2, t0    # adds offset to the first address (t0 <- a2 + t0)
+  add t0, a0, t0    # adds offset to the first address (t0 <- a0 + t0)
   lw a0, 0(t0)    # writes in a0 the value in t0+0
   jr ra
-
-loop_end:
-  jr ra                  # normal return
-
 
 # Exits the program with an error 
 # Arguments: 
@@ -50,3 +47,7 @@ loop_end:
 exit_with_error:
   li a7, 93            # Exit system call
   ecall                # Terminate program
+
+code51:
+  li a0, 51
+  j exit_with_error
