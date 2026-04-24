@@ -32,6 +32,8 @@ exit:
 #     this function terminates the program with error code 51
 # ===========================================================================
 select:
+  bge a2, a1, exit_with_error  # if element index >= array length
+  
   slli t0, a2, 2    # multiplies by 2^2
   add t0, a2, t0    # adds offset to the first address (t0 <- a2 + t0)
   lw a0, 0(t0)    # writes in a0 the value in t0+0
