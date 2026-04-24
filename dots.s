@@ -78,5 +78,5 @@ exit_with_error:
   ecall                # Terminate program
 
 code50:
-  li a0,CINQUENTA                     # a0 = 50 (error code)
+  li a0,CINQUENTA              # a0 = 50 (error code)
   j exit_with_error            # call exit_with_error function
