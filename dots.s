@@ -1,3 +1,13 @@
+# *********************************************************************
+# * PROJETO IAC
+# * Grupo: Número 18
+# * Grupo constituído por:
+# *    - Henrique Ascenção Lopes da Silva Gonçalves      ISTID: ist1109966
+# *    - Margarida Isabel Farinha Nunes                  ISTID: ist1117809
+# *    - Victória Bernaz                                 ISTID: ist1117771
+# *
+# *********************************************************************
+
 .data
 # You can change these arrays to test other values
 A: .word -3, 2, -1, 7, -2   # Initial array A values				 
