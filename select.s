@@ -36,8 +36,8 @@ select:
   blt a2, zero, code51  # if element index < 0 
   
   slli t0, a2, 2    # multiplies by 2^2
-  add t0, a0, t0    # adds offset to the first address (t0 <- a0 + t0)
-  lw a0, 0(t0)    # writes in a0 the value in t0+0
+  add t0, a0, t0    # adds offset to the base address (t0 <- a0 + t0)
+  lw a0, 0(t0)    # loads in a0 the word in the adress t0+0
   jr ra
 
 # Exits the program with an error 
