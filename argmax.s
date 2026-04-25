@@ -1,5 +1,5 @@
 # *********************************************************************
-# * PROJETO IAC
+# * PROJETO_1 IAC
 # * Grupo: Número 18
 # * Grupo constituído por:
 # *    - Henrique Ascenção Lopes da Silva Gonçalves      ISTID: ist1109966
