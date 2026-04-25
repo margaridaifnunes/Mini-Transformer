@@ -1,5 +1,5 @@
 # *********************************************************************
-# * PROJETO IAC
+# * PROJETO_1 IAC
 # * Grupo: Número 18
 # * Grupo constituído por:
 # *    - Henrique Ascenção Lopes da Silva Gonçalves      ISTID: ist1109966
@@ -47,7 +47,7 @@ select:
   
   slli t0, a2, 2    # multiplies by 2^2
   add t0, a0, t0    # adds offset to the base address (t0 <- a0 + t0)
-  lw a0, 0(t0)    # loads in a0 the word in the adress t0+0
+  lw a0, 0(t0)      # loads in a0 the word in the adress t0+0
   jr ra
 
 # Exits the program with an error 
