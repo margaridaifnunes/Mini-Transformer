@@ -45,7 +45,7 @@ select:
   bge a2, a1, code51    # if element index >= array length
   blt a2, zero, code51  # if element index < 0 
   
-  slli t0, a2, 2    # multiplies by 2^2
+  slli t0, a2, 2    # t0 = a2 * 2ˆ2
   add t0, a0, t0    # adds offset to the base address (t0 <- a0 + t0)
   lw a0, 0(t0)      # loads in a0 the word in the adress t0+0
   jr ra
