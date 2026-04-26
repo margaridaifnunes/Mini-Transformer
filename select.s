@@ -59,5 +59,5 @@ exit_with_error:
   ecall                # Terminate program
 
 code51:
-  li a0, 51
-  j exit_with_error
+  li a0, 51  # a0 = 51 (error code)
+  j exit_with_error  # call exit_with_error function
