@@ -42,7 +42,7 @@ exit:
 #     this function terminates the program with error code 51
 # ===========================================================================
 select:
-  bge a2, a1, code51  # if element index >= array length
+  bge a2, a1, code51    # if element index >= array length
   blt a2, zero, code51  # if element index < 0 
   
   slli t0, a2, 2    # multiplies by 2^2
@@ -59,5 +59,5 @@ exit_with_error:
   ecall                # Terminate program
 
 code51:
-  li a0, 51  # a0 = 51 (error code)
-  j exit_with_error  # call exit_with_error function
+  li a0, 51            # a0 = 51 (error code)
+  j exit_with_error    # call exit_with_error function
