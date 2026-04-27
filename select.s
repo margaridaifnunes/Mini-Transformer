@@ -42,9 +42,10 @@ exit:
 #     this function terminates the program with error code 51
 # ===========================================================================
 select:
-  bge a2, a1, code51    # if element index >= array length
-  blt a2, zero, code51  # if element index < 0 
-  
+  bge a2, a1, code100    # if element index >= array length
+  blt a2, zero, code100  # if element index < 0 
+
+  # falta a parte do indíce do maior elemento em a1
   slli t0, a2, 2    # t0 = a2 * 2ˆ2
   add t0, a0, t0    # adds offset to the base address (t0 <- a0 + t0)
   lw a0, 0(t0)      # loads in a0 the word in the adress t0+0
@@ -57,6 +58,10 @@ select:
 exit_with_error:
   li a7, 93            # Exit system call
   ecall                # Terminate program
+
+code100:
+  li a0, 100           # a0 = 100 (error code)
+  j exit_with_error    # call exit_with_error function
 
 code51:
   li a0, 51            # a0 = 51 (error code)
