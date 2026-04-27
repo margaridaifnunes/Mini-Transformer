@@ -1,38 +1,24 @@
-# *********************************************************************
-# * PROJETO_1 IAC
-# * Grupo: Número 18
-# * Grupo constituído por:
-# *    - Henrique Ascenção Lopes da Silva Gonçalves      ISTID: ist1109966
-# *    - Margarida Isabel Farinha Nunes                  ISTID: ist1117809
-# *    - Victória Bernaz                                 ISTID: ist1117771
-# *
-# *********************************************************************
-
+# You can change these values to test your solution.
 .data
-# You can change this array to test other values
-array: .word -3, 2, -1, 7, -2   # Initial array values				 
+ARRAY: .word -6 -1 6 1
+SIZE:  .word 4
+
 
 .text
-
-# **********************************************************************
+# ************************
 # * Constantes
-# **********************************************************************
+# ************************
+
+# Constantes numericas:
 .equ CINQUENTA, 50
 
 main:
-  la a0, array      # a0 = pointer to array
-  li a1, 5          # a1 = number of elements in the array
-
-  
-  ble a1, zero, code50
-  jal ra, argmax      # Call argmax function
-
-  # Result: a0 contains the index of the largest element
-
+  la a1, ARRAY        # a1 = pointer to array
+  lw a2, SIZE         # a2 = number of elements in the array
+  jal ra, argmax      # call argmax function
 exit:
-  li a7, 10              # Exit syscall code
-  ecall                  # Terminate the program
-
+  li a7, 10           # exit syscall code 
+  ecall               # terminate the program
 
 # ==========================================================================
 # FUNCTION: argmax
@@ -40,52 +26,48 @@ exit:
 #   If there are multiple elements with the same maximum value, 
 #   it should return the smallest index among them.
 # Arguments:
-#   a0 = pointer to int array
-#   a1 = array length
+#   a1 = pointer to int array
+#   a2 = array length
 # Returns:
-#   a0 = index of the largest element
-# Exceptions:
-#   - If the length of the array is less than 1,
-#     this function terminates the program with error code 50
+#   a0 = status code
+#   a1 = index of the largest element
 # ===========================================================================
+
+
 argmax:
-    li  t0,0                # inicialize the value at 0
-      # Checks if it has 0 elements
-
-main_argMax:
-  bge t0, a1, No_items  
-  lw t1, 0(a0)              
-  addi a0,a0,4                  # goes to the next value
-  beq zero,t0,first_case        # checks if the index is equal to 0 if true calls function: first_case
-  addi t0, t0,1                 # increments 1 to the index
-  ble t1,a2, main_argMax        # checks if the last value is less than the bigest value continues searching
-  addi a3,t0,-1                 # decrements the index of the biggest value index
-  add a2,t1,zero                # sets the bigest value to the last value
-  j main_argMax                 # continues searching
-         
-
-first_case:
-  add a3,zero,zero              # sets a3 = 0
-  add a2,t1,zero                # sets a2 to the value of the first element (t1)
-  addi t0,t0,1                  # increments 1 to the searching index 
-  j main_argMax                 # calls the function: main_arMax
-
-No_items:
-  add a0, a3, zero      # set a3 to the biggest value (a2)
-  j exit                # exits the function
-
-loop_end:
-  jr ra                  # normal return
+  ble a2, zero, code50      # Checks if the array legnth is 0
+  li t0, 0                  # inicializes the counter
+  li s1,1                   # Initializes teh axiliary for the indexes
+  li s2,0                   # Initializes the auxiliary that stores the largest
+  add t0, a1, zero          # Sets the pointes (t0) to the pointer to the arry
+  lw t3, 0(a1)              # Loads the first word (int in this case)
 
 
-# Exits the program with an error 
-# Arguments: 
-# a0 (int) is the error code 
-# You need to load a0 the error to a0 before to jump here
-exit_with_error:
-  li a7, 93            # Exit system call
-  ecall                # Terminate program
+main_argMax: 
+  ble a2, zero, done        # checks if the list ended if true goes to label "done"
+  addi t0, t0, 4            # increments to the next word (int in this case)
+  addi a2, a2, -1           # decrementes the size of the arry
+  addi s1,s1,1              # adds one the the auxiliary index tracker
+  lw t4, 0(t0)              # loads the word that t0 (pointer) is pointing to
+  bgt t4, t3, MaxFound      # checks if the current word bigger than the the one saved 
+                            # if true goes to "MaxFound"
+
+  j main_argMax             # goes to "main_argMax"
+
+
+MaxFound:
+  mv a1,t0                  # sets the pointer of a1 to the same as t0
+  addi t3,t4,0              # changes the previus biggest value to the current one
+  addi s2,s1,0              # changes the auxiliary index to the corresponding one
+  j main_argMax             # jumps again the the "main_argMax"
+
+done:
+  add a1,s2,zero            # Sets a1 to the auxiliary Index
+  j exit                    # jumps tho the "exit"
 
 code50:
-  li a0, CINQUENTA            # set the error code
-  j exit_with_error    # call the error fucntion
+  li a0, CINQUENTA          # set the error code
+  ecall                     # jumps to the error label
+
+argmax_end:
+  jr ra               # return to the caller
