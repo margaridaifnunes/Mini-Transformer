@@ -39,7 +39,6 @@ select:
   bge a3, a2, code100    # if element index >= array length
   blt a3, zero, code50  # if element index < 0 
 
-  # falta a parte do indíce do maior elemento em a1
   slli t0, a3, 2    # t0 = a2 * 2ˆ2
   add t0, a1, t0    # adds offset to the base address (t0 <- a1 + t0)
   lw a1, 0(t0)      # loads in a1 the word in the adress t0+0
