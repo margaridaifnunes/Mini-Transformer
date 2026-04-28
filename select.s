@@ -54,5 +54,5 @@ code100:
   j select_end         # call exit_with_error function
 
 code50:
-  li a0, 50            # a0 = 100 (error code)
+  li a0, 50            # a0 = 50 (error code)
   j select_end         # call exit_with_error function
