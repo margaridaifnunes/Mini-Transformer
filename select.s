@@ -8,6 +8,7 @@
 # *
 # *********************************************************************
 
+# You can change these values to test your solution.
 .data
 ARRAY: .word -6 -1 6 1
 SIZE:  .word 4
