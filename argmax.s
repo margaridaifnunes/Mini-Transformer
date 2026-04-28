@@ -1,3 +1,12 @@
+# *********************************************************************
+# * PROJETO_1 IAC
+# * Grupo: Número 18
+# * Grupo constituído por:
+# *    - Henrique Ascenção Lopes da Silva Gonçalves      ISTID: ist1109966
+# *    - Margarida Isabel Farinha Nunes                  ISTID: ist1117809
+# *    - Victória Bernaz                                 ISTID: ist1117771
+# *
+# *********************************************************************
 # You can change these values to test your solution.
 .data
 ARRAY: .word -6 -1 6 1
@@ -35,11 +44,11 @@ exit:
 
 
 argmax:
-  ble a2, zero, code50      # Checks if the array legnth is 0
+  ble a2, zero, code50      # Checks if the array length is 0
   li t0, 0                  # inicializes the counter
   li s1,1                   # Initializes teh axiliary for the indexes
   li s2,0                   # Initializes the auxiliary that stores the largest
-  add t0, a1, zero          # Sets the pointes (t0) to the pointer to the arry
+  add t0, a1, zero          # Sets the pointes (t0) to the pointer to the array
   lw t3, 0(a1)              # Loads the first word (int in this case)
 
 
