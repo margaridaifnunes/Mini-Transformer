@@ -1,4 +1,13 @@
-# You can change these values to test your solution.
+# *********************************************************************
+# * PROJETO_1 IAC
+# * Grupo: Número 18
+# * Grupo constituído por:
+# *    - Henrique Ascenção Lopes da Silva Gonçalves      ISTID: ist1109966
+# *    - Margarida Isabel Farinha Nunes                  ISTID: ist1117809
+# *    - Victória Bernaz                                 ISTID: ist1117771
+# *
+# *********************************************************************
+
 .data
 ARRAY: .word -6 -1 6 1
 SIZE:  .word 4
