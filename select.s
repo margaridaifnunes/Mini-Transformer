@@ -37,7 +37,9 @@ exit:
 # ===========================================================================
 select:
   bge a3, a2, code100       # if element index >= array length
-  ble a3, zero, code50      #if element index < 0 
+  blt a3, zero, code100     # if element index < 0
+  li t1, 1                  # t1 = 1
+  blt a2, t1, code50        # if array length < 1 
 
   slli t0, a3, 2            # t0 = a2 * 2ˆ2
   add t0, a1, t0            # adds offset to the base address (t0 <- a1 + t0)
