@@ -36,8 +36,8 @@ exit:
 #   a1 = value of the selected element
 # ===========================================================================
 select:
-  bge a2, a1, code100    # if element index >= array length
-  blt a2, zero, code100  # if element index < 0 
+  bge a3, a2, code100    # if element index >= array length
+  blt a3, zero, code50  # if element index < 0 
 
   # falta a parte do indíce do maior elemento em a1
   slli t0, a3, 2    # t0 = a2 * 2ˆ2
