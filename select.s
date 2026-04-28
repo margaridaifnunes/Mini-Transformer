@@ -36,7 +36,24 @@ exit:
 #   a1 = value of the selected element
 # ===========================================================================
 select:
-  # TODO: Implement the select function here
+  bge a2, a1, code100    # if element index >= array length
+  blt a2, zero, code100  # if element index < 0 
+
+  # falta a parte do indíce do maior elemento em a1
+  slli t0, a3, 2    # t0 = a2 * 2ˆ2
+  add t0, a0, t0    # adds offset to the base address (t0 <- a0 + t0)
+  lw a1, 0(t0)      # loads in a0 the word in the adress t0+0
+  
+  li a0, 0 
+  j select_end
 
 select_end:
   jr ra               # return to the caller
+
+code100:
+  li a0, 100           # a0 = 100 (error code)
+  j select_end         # call exit_with_error function
+
+code50:
+  li a0, 50            # a0 = 100 (error code)
+  j select_end         # call exit_with_error function
