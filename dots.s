@@ -53,7 +53,7 @@ dot:
   li t1,0                     # initializing t1 (final_result) to 0
   li t4,0                     # initializing t4 (term result) to 0
 
-  ble a3, zero, code50
+  ble a3, zero, code50        # validation of array size limit
 
 dot_loop:
 
@@ -65,15 +65,15 @@ dot_loop:
   mul t4, t2, t3    # t4 = t2 * t3 (term)
   add t1, t1, t4    # current result
 
-  addi a1,a1,4                  # next value
-  addi a2,a2,4                  # next value
+  addi a1,a1,4      # next value
+  addi a2,a2,4      # next value
 
   addi t0, t0, 1    # incrementar o indice do array
   j dot_loop
 
 loop_end:
-  add a1,t1,zero
-  j code0
+  add a1,t1,zero  # a1 = final result of the operation
+  j code0         # sign of sucess
 
 dot_end:
   jr ra               # return to the caller
@@ -81,7 +81,7 @@ dot_end:
 
 
 code0:  # sucess
-  li a0, ZERO # a0 = 0
+  li a0, ZERO  # a0 = 0
   j dot_end
 
 code50: # invalid argument
