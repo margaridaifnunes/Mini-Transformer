@@ -6,6 +6,7 @@ Project for Introduction to Computer Architecture
 O QUE FALTA:
   - verficiar comentação das 3 funções;
   - ver como se entrega e limite de submissões;
+  - parte do overflow na função dot
   - etc.
 
 2nd delivery:
