@@ -91,9 +91,9 @@ overflow_mul:
   bne t5,t6,code200  # se os sinais forem diferentes... o sinal mudou e houve overflow
   jr ra
   
-overflow_sum:
-    srli t5,t1,31      # sinal do acumulado (t1)
-    srli t6,t4,31      # sinal do termo atual (t4)
+overflow_sum:            ####### REVER
+  srli t5,t1,31      # sinal do acumulado (t1)
+  srli t6,t4,31      # sinal do termo atual (t4)
   xor t5,t5,t6      # dá 0 se forem bits iguais e 1 se forem bits diferentes
 
   add t1, t1, t4    # current result (sum tresult)
