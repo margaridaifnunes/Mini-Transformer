@@ -48,6 +48,10 @@ exit:
 #   a1 = dot product result
 # ===========================================================================
 dot:
+
+  addi sp, sp, -4  # sp - stack pointer
+  sw ra, 0(sp)
+  
   li t0,0                     # initializing t0 (index dos arrays) to 0
   li t1,0                     # initializing t1 (final_result) to 0
   li t4,0                     # initializing t4 (term result) to 0
@@ -61,28 +65,9 @@ dot_loop:
   lw t3,0(a2)                 # t3 = current index value
 
   mul t4, t2, t3    # t4 = t2 * t3 (term)
-
-  ### Overflow verification (mult): 
-  mulh t5,t2,t3      # 32 bits altos em t5                     #### editar comments daqui para baixo
-  srai t6,t4,31        # insere o bit mais significativo à esq.
+  jal ra, overflow_mul
+  jal ra, overflow_sum
   
-  bne t5,t6,code200  # se os sinais forem diferentes... o sinal mudou e houve overflow
-  ###
-  
-  ### Overflow verification (sum):
-  andi t5,t1, 0x80000000  # and dá 0 se, pelo menos um, for zero.
-  andi t6,t4, 0x80000000
-  xor t5,t5,t6      # dá 0 se forem bits iguais e 1 se forem bits diferentes
-
-  add t1, t1, t4    # current result (sum tresult)
-  andi t7, t1, 0x80000000    # bit de sinal do resultado
-
-  # compara sinal do resultado com sinal original
-  xor t6, t6, t7             # se diferente → overflow!
-  bne t5,zero,continue_loop
-  bne t6, zero, code200
-
-  continue_loop:
   # na soma com sinais diferentes nunca à overflow; se tiverem sinais iguais é preciso fazer a conta e verificar
   addi a1,a1,4      # next value
   addi a2,a2,4      # next value
@@ -110,3 +95,25 @@ code50: # invalid argument
 code200:  # detected overflow
   li a0, DUZENTOS  # a0 = 200
   j dot_end
+
+overflow_mul:
+  mulh t5,t2,t3      # 32 bits altos em t5                     #### editar comments daqui para baixo
+  srai t6,t4,31        # insere o bit mais significativo à esq.
+  
+  bne t5,t6,code200  # se os sinais forem diferentes... o sinal mudou e houve overflow
+  jr ra
+  
+overflow_sum:
+  andi t5,t1, 0x80000000  # and dá 0 se, pelo menos um, for zero.
+  andi t6,t4, 0x80000000
+  xor t5,t5,t6      # dá 0 se forem bits iguais e 1 se forem bits diferentes
+
+  add t1, t1, t4    # current result (sum tresult)
+  andi t7, t1, 0x80000000    # bit de sinal do resultado
+
+  # compara sinal do resultado com sinal original
+  xor t6, t6, t7             # se diferente → overflow!
+  bne t5,zero,continue_loop
+  bne t6, zero, code200
+  jr ra
+
