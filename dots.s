@@ -80,6 +80,8 @@ loop_end:
   j code0         # sign of sucess
 
 dot_end:
+  lw ra, 0(sp)      # restaurar ra original
+  addi sp, sp, 4    # restaurar sp
   jr ra               # return to the caller
 
 overflow_mul:
