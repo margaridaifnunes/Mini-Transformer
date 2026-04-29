@@ -67,7 +67,6 @@ dot_loop:
   mul t4, t2, t3    # t4 = t2 * t3 (term)
   jal ra, overflow_mul
   jal ra, overflow_sum
-  
   # na soma com sinais diferentes nunca à overflow; se tiverem sinais iguais é preciso fazer a conta e verificar
   addi a1,a1,4      # next value
   addi a2,a2,4      # next value
@@ -83,7 +82,25 @@ loop_end:
 dot_end:
   jr ra               # return to the caller
 
+overflow_mul:
+  mulh t5,t2,t3      # 32 bits altos em t5                     #### editar comments daqui para baixo
+  srai t6,t4,31        # insere o bit mais significativo à esq.
+  
+  bne t5,t6,code200  # se os sinais forem diferentes... o sinal mudou e houve overflow
+  jr ra
+  
+overflow_sum:
+    srli t5,t1,31      # sinal do acumulado (t1)
+    srli t6,t4,31      # sinal do termo atual (t4)
+  xor t5,t5,t6      # dá 0 se forem bits iguais e 1 se forem bits diferentes
 
+  add t1, t1, t4    # current result (sum tresult)
+  srli t6,t1, 31    # reutilizar t6
+
+  # compara sinal do resultado com sinal original
+  bne t6,zero,code200
+  jr ra
+  
 code0:  # sucess
   li a0, ZERO  # a0 = 0
   j dot_end
@@ -95,25 +112,3 @@ code50: # invalid argument
 code200:  # detected overflow
   li a0, DUZENTOS  # a0 = 200
   j dot_end
-
-overflow_mul:
-  mulh t5,t2,t3      # 32 bits altos em t5                     #### editar comments daqui para baixo
-  srai t6,t4,31        # insere o bit mais significativo à esq.
-  
-  bne t5,t6,code200  # se os sinais forem diferentes... o sinal mudou e houve overflow
-  jr ra
-  
-overflow_sum:
-  andi t5,t1, 0x80000000  # and dá 0 se, pelo menos um, for zero.
-  andi t6,t4, 0x80000000
-  xor t5,t5,t6      # dá 0 se forem bits iguais e 1 se forem bits diferentes
-
-  add t1, t1, t4    # current result (sum tresult)
-  andi t7, t1, 0x80000000    # bit de sinal do resultado
-
-  # compara sinal do resultado com sinal original
-  xor t6, t6, t7             # se diferente → overflow!
-  bne t5,zero,continue_loop
-  bne t6, zero, code200
-  jr ra
-
