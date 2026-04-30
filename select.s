@@ -45,7 +45,7 @@ select:
   add t0, a1, t0            # adds offset to the base address (t0 <- a1 + t0)
   lw a1, 0(t0)              # loads in a1 the word in the adress t0+0
   
-  li a0, 0                  # success 
+  li a0, 0                  # success (a0 = 0)
   j select_end              # jump to select_end function
 
 select_end:
