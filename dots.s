@@ -111,7 +111,7 @@ code0:  # sucess
   j dot_end
 
 code50: # invalid argument
-  li a0,CINQUENTA   # a0 = 50
+  li a0, CINQUENTA   # a0 = 50
   j dot_end
 
 code200:  # detected overflow
