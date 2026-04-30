@@ -1,12 +1,12 @@
-# *********************************************************************
-# * PROJETO_1 IAC
-# * Grupo: Número 18
-# * Grupo constituído por:
-# *    - Henrique Ascenção Lopes da Silva Gonçalves      ISTID: ist1109966
-# *    - Margarida Isabel Farinha Nunes                  ISTID: ist1117809
-# *    - Victória Bernaz                                 ISTID: ist1117771
-# *
-# *********************************************************************
+# ===========================================================================
+# PROJETO_1 IAC
+# Grupo: Número 18
+# Grupo constituído por:
+#    - Henrique Ascenção Lopes da Silva Gonçalves      ISTID: ist1109966
+#    - Margarida Isabel Farinha Nunes                  ISTID: ist1117809
+#    - Victória Bernaz                                 ISTID: ist1117771
+# 
+# ===========================================================================
 # You can change these values to test your solution.
 .data
 A:    .word 6, 1, 3, 9, 12, 4, 13, 153
