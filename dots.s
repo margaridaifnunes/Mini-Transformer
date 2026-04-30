@@ -45,7 +45,6 @@ exit:
 #   a1 = dot product result
 # ===========================================================================
 dot:
-
   addi sp, sp, -4             # sp - stack pointer
   sw ra, 0(sp)
   
