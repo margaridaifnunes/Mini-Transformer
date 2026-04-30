@@ -50,20 +50,20 @@ argmax:
 
 
 main_argMax: 
-  ble a2, zero, done        # Checks if the list ended if true goes to label "done"
+  ble a2, zero, done        # Checks if the list ended if true goes to "done"
   addi t0, t0, 4            # Increments to the next word (int in this case)
   addi a2, a2, -1           # Decrementes the size of the arry
   addi s1,s1,1              # Adds one the the auxiliary index tracker
   lw t4, 0(t0)              # Loads the word that t0 (pointer) is pointing to
-  bgt t4, t3, MaxFound      # Checks if the current word bigger than the the one saved 
+  bgt t4, t3, MaxFound      # Checks if the current word bigger than the one saved 
                             # If true goes to "MaxFound"
   j main_argMax             # Goes to "main_argMax"
 
 
 MaxFound:
   mv a1,t0                  # Sets the pointer of a1 to the same as t0
-  addi t3,t4,0              # Changes the previus biggest value to the current one
-  addi s2,s1,0              # Changes the auxiliary index to the corresponding one
+  addi t3,t4,0              # Replaces the previous max with the current value
+  addi s2,s1,0              # Sets the auxiliary index accordingly
   j main_argMax             # Jumps again the the "main_argMax"
 
 done:
