@@ -91,7 +91,7 @@ overflow_mul:
   bne t5,t6,code200    # if t5 and t6 signals are diferentes - overflow detected
   jr ra
   
-overflow_sum
+overflow_sum:
   srli t5,t1,31        # cumulative signal (t1)
   srli t6,t4,31        # current term signal (t4)
   xor t5,t5,t6         # 0 -> equal bits; 1 -> diferent bits
@@ -110,7 +110,7 @@ code0:  # sucess
   j dot_end
 
 code50: # invalid argument
-  li a0, CINQUENTA   # a0 = 50
+  li a0, CINQUENTA  # a0 = 50
   j dot_end
 
 code200:  # detected overflow
