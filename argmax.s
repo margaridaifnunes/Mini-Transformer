@@ -41,38 +41,38 @@ exit:
 # ===========================================================================
 
 argmax:
-  ble a2, zero, code50      # Checks if the array length is 0
-  li t0, 0                  # Inicializes the counter
-  li s1,1                   # Initializes teh axiliary for the indexes
-  li s2,0                   # Initializes the auxiliary that stores the largest
-  add t0, a1, zero          # Sets the pointes (t0) to the pointer to the array
-  lw t3, 0(a1)              # Loads the first word (int in this case)
+  ble a2, zero, code50      # checks if the array length is 0
+  li t0, 0                  # inicializes the counter
+  li s1,1                   # initializes teh axiliary for the indexes
+  li s2,0                   # initializes the auxiliary that stores the largest
+  add t0, a1, zero          # sets the pointes (t0) to the pointer to the array
+  lw t3, 0(a1)              # loads the first word (int in this case)
 
 
 main_argMax: 
-  ble a2, zero, done        # Checks if the list ended if true goes to "done"
-  addi t0, t0, 4            # Increments to the next word (int in this case)
-  addi a2, a2, -1           # Decrementes the size of the arry
-  addi s1,s1,1              # Adds one the the auxiliary index tracker
-  lw t4, 0(t0)              # Loads the word that t0 (pointer) is pointing to
-  bgt t4, t3, MaxFound      # Checks if the current word bigger than the one saved 
-                            # If true goes to "MaxFound"
-  j main_argMax             # Goes to "main_argMax"
+  ble a2, zero, done        # checks if the list ended if true goes to "done"
+  addi t0, t0, 4            # increments to the next word (int in this case)
+  addi a2, a2, -1           # decrementes the size of the arry
+  addi s1,s1,1              # adds one the the auxiliary index tracker
+  lw t4, 0(t0)              # loads the word that t0 (pointer) is pointing to
+  bgt t4, t3, MaxFound      # checks if the current word bigger than the one saved 
+                            # if true goes to "MaxFound"
+  j main_argMax             # goes to "main_argMax"
 
 
 MaxFound:
-  mv a1,t0                  # Sets the pointer of a1 to the same as t0
-  addi t3,t4,0              # Replaces the previous max with the current value
-  addi s2,s1,0              # Sets the auxiliary index accordingly
-  j main_argMax             # Jumps again the the "main_argMax"
+  mv a1,t0                  # sets the pointer of a1 to the same as t0
+  addi t3,t4,0              # replaces the previous max with the current value
+  addi s2,s1,0              # sets the auxiliary index accordingly
+  j main_argMax             # jumps again the the "main_argMax"
 
 done:
-  add a1,s2,zero            # Sets a1 to the auxiliary Index
-  j exit                    # Jumps tho the "exit"
+  add a1,s2,zero            # sets a1 to the auxiliary Index
+  j exit                    # jumps tho the "exit"
 
 code50:
-  li a0, CINQUENTA          # Set the error code
-  ecall                     # Jumps to the error label
+  li a0, CINQUENTA          # set the error code
+  ecall                     # jumps to the error label
 
 argmax_end:
-  jr ra                     # Return to the caller
+  jr ra                     # return to the caller
