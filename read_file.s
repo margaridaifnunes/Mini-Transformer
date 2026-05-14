@@ -11,16 +11,14 @@ sw ra, 12(sp)
 sw a1, 8(sp)
 sw a2, 4(sp)
 
-# verificar tamanho do buffer se a2 < 1 não vale a pena ler erro 42?
-
 # Abrir o ficheiro:
-li a1, 0 # flag a zero 
+li a1, 0     # flag a zero 
 li a7, 1024  # open
-ecall    # a0 = fd (fd < 0 se houve erro)
+ecall        # a0 = fd (fd < 0 se houve erro)
 
 # verificar se fd é válido (fd >= 0):
 blt a0, x0, invalid_fd  # fd < 0 (error 41)
-sw a0, 0(sp)  # guardar fd na stack para depois fazer close
+sw a0, 0(sp)            # guardar fd na stack para depois fazer close
 
 # Ler o ficheiro:
 lw a1, 8(sp)  # restaurar o endereço do buffer
@@ -28,11 +26,20 @@ lw a2, 4(sp)  # restaurar o tamanho
 li a7, 63     # ler o ficheiro
 ecall
 
-### FALTA
+### REVER
+# Guardar bytes lidos que o return da leitura do ficheiro coloca em a0: 
+add t0, a0, x0
+###
+
 # Fechar o ficheiro:
 lw a0, 0(sp)
 li a7, 57
 ecall
+
+### REVER
+# retornar bytes lidos:
+add a0, t0, x0
+####
 
 # Restaurar a stack:
 lw ra, 12(sp)
@@ -40,6 +47,6 @@ addi sp, sp, 16
 jr ra
 
 invalid_fd:
-  li ao, 42
+  li a0, 41
   li a7, 93
   ecall
