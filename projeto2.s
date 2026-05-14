@@ -75,7 +75,20 @@ main:
     ###########################################################################
     # Read vocabulary
     ###########################################################################
-    # TODO
+    la a0, VOCABULARY_FILENAME
+    li a1, 0
+    li a2, 0
+    li a7, CONST_SYSCALL_OPEN
+
+    mv a0, s0
+    la a1, VOCAB_BUFFER
+    li a2, CONST_BUFFER_SIZE
+    li a7, CONST_SYSCALL_READ
+    ecall 
+
+    mv a0, s0
+    li a7, CONST_SYSCALL_CLOSE
+    ecall
 
     ###########################################################################
     # Read input
