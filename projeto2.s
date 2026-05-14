@@ -75,7 +75,7 @@ main:
     ###########################################################################
     # Read vocabulary
     ###########################################################################
-    la a0, VOCABULARY_FILENAME  # colocao adress o ficheiro do vocabulário
+    la a0, VOCABULARY_FILENAME  # coloca o adress o ficheiro do vocabulário
     li a1, 0
     li a2, 0
     li a7, CONST_SYSCALL_OPEN   # escolhe syscall open
