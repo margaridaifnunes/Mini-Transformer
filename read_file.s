@@ -38,4 +38,4 @@ jr ra
 invalid_fd:
   li a0, 41
   li a7, CONST_SYSCALL_EXIT2
-  ecall
+  ret
