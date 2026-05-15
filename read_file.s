@@ -5,7 +5,6 @@
 # (in/out) a1: destination buffer 
 # (in)     a2: maximum number of bytes to read 
 read_file: 
-
 addi sp,sp,-16
 sw ra, 12(sp)
 sw a1, 8(sp)
