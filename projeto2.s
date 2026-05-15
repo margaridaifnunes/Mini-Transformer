@@ -92,7 +92,11 @@ main:
     ###########################################################################
     # Read W_Q matrix
     ###########################################################################
-    # TODO
+    la a0, W_Q_FILENAME       # coloca o adress o ficheiro do input
+    la a1, MATRIX_BUFFER         # coloca o adress onde vai colocar o buffer do ficheiro
+    li a2, CONST_BUFFER_SIZE    # coloca em a2 o número máximo de bytes a ler
+
+    jal ra, read_file
 
     ###########################################################################
     # Parse W_Q matrix from buffer
@@ -102,7 +106,11 @@ main:
     ###########################################################################
     # Read W_K matrix
     ###########################################################################
-    # TODO
+    la a0, W_k_FILENAME       # coloca o adress o ficheiro do input
+    la a1, MATRIX_BUFFER         # coloca o adress onde vai colocar o buffer do ficheiro
+    li a2, CONST_BUFFER_SIZE    # coloca em a2 o número máximo de bytes a ler
+
+    jal ra, read_file
 
     ###########################################################################
     # Parse W_K matrix from buffer
@@ -112,8 +120,11 @@ main:
     ###########################################################################
     # Read W_V matrix
     ###########################################################################
-    # TODO
-
+    la a0, W_V_FILENAME       # coloca o adress o ficheiro do input
+    la a1, MATRIX_BUFFER         # coloca o adress onde vai colocar o buffer do ficheiro
+    li a2, CONST_BUFFER_SIZE    # coloca em a2 o número máximo de bytes a ler
+    
+    jal ra, read_file
     ###########################################################################
     # Parse W_V matrix from buffer
     ###########################################################################
