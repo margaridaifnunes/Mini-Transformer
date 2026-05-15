@@ -5,4 +5,5 @@ Project for Introduction to Computer Architecture
 
 2nd Project -> projeto2.s
 
-3rd Project:
+Dúvidas/Questões:
+ -> na função read_file como podemos substituir o code 41? fechamos o ficheiro?
