@@ -105,7 +105,7 @@ main:
     ###########################################################################
     # Read W_K matrix
     ###########################################################################
-    la a0, W_k_FILENAME       # coloca o adress o ficheiro do input
+    la a0, W_K_FILENAME       # coloca o adress o ficheiro do input
     la a1, MATRIX_BUFFER         # coloca o adress onde vai colocar o buffer do ficheiro
     li a2, CONST_BUFFER_SIZE    # coloca em a2 o número máximo de bytes a ler
 
