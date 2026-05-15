@@ -131,7 +131,11 @@ main:
     ###########################################################################
     # Read embeddings matrix
     ###########################################################################
-    # TODO
+    la a0, EMBEDDINGS_FILENAME   # coloca o adress o ficheiro do input
+    la a1, MATRIX_BUFFER         # coloca o adress onde vai colocar o buffer do ficheiro
+    li a2, CONST_BUFFER_SIZE     # coloca em a2 o número máximo de bytes a ler
+
+    jal ra, read_file
 
     ###########################################################################
     # Parse vocabulary embeddings matrix from buffer
