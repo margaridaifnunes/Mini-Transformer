@@ -25,20 +25,10 @@ lw a2, 4(sp)  # restaurar o tamanho
 li a7, 63     # ler o ficheiro
 ecall
 
-### REVER
-# Guardar bytes lidos que o return da leitura do ficheiro coloca em a0: 
-add t0, a0, x0
-###
-
 # Fechar o ficheiro:
 lw a0, 0(sp)
 li a7, 57
 ecall
-
-### REVER
-# retornar bytes lidos:
-add a0, t0, x0
-####
 
 # Restaurar a stack:
 lw ra, 12(sp)
