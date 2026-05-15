@@ -22,7 +22,7 @@ sw a0, 0(sp)            # guardar fd na stack para depois fazer close
 # Ler o ficheiro:
 lw a1, 8(sp)  # restaurar o endereço do buffer
 lw a2, 4(sp)  # restaurar o tamanho
-li a7, 63     # ler o ficheiro
+li a7, 63     # ler o ficheiro (a1 = filename adress, a2 = maximum number of bytes to read)
 ecall
 
 # Fechar o ficheiro:
