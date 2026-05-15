@@ -97,7 +97,6 @@ main:
     li a2, CONST_BUFFER_SIZE    # coloca em a2 o número máximo de bytes a ler
 
     jal ra, read_file
-
     ###########################################################################
     # Parse W_Q matrix from buffer
     ###########################################################################
@@ -111,7 +110,6 @@ main:
     li a2, CONST_BUFFER_SIZE    # coloca em a2 o número máximo de bytes a ler
 
     jal ra, read_file
-
     ###########################################################################
     # Parse W_K matrix from buffer
     ###########################################################################
