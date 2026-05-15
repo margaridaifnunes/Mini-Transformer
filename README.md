@@ -7,3 +7,7 @@ Project for Introduction to Computer Architecture
 
 Dúvidas/Questões:
  -> na função read_file como podemos substituir o code 41? fechamos o ficheiro? E com o código 63 o que devemos fazer se devolver -1.
+
+
+Não esquecer (no fim):
+ - comentar tudo em inglês ou tudo em ptpt
