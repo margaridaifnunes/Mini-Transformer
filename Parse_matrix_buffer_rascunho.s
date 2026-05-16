@@ -1,5 +1,4 @@
 parse_matrix_buffer:
-
     addi sp ,sp -12              # reserva 12 bytes para a stack
     sw ra, 0(sp)
     sw s0, 4(sp)
@@ -11,21 +10,20 @@ parse_matrix_buffer:
     li s1, 0
 
     loop_byte:
-        lb t1, 0(a1)            # t1 = byte a anilzar 
+        lb t1, 0(a1)                # t1 = byte a anilzar 
         li t0,CONST_CHAR_SPACE      # codigo do space
-            beq t1, t0, space   # se t1 é ' '
+            beq t1, t0, space       # se t1 é ' '
 
         li t0, CONST_CHAR_NEWLINE   # codigo do Newline
-            beq t1, t0,new_row     # se t1 é '\n'
+            beq t1, t0,new_row      # se t1 é '\n'
 
         li t0, CONST_CHAR_EOF       # codigo do EOF
             beq t1, t0, loop_end    # se t1 é EOF
             
         li t0, CONST_CHAR_HYPHEN    # codigo do '-'
             beq t1, t0, negative    # se t1 e '-'
-        #conversão
-
         
+        # conversão:
         li t0, CONST_CHAR_ZERO
         sub t1,t1, t0                #converter para ASCII ( t1 - 48 ('0'))
         
@@ -59,7 +57,7 @@ parse_matrix_buffer:
         mv a1 ,t2
         mv a0, s0
         lw ra, 0(sp)
-        lw s0, 4(sp)            # rstaurar o ra
+        lw s0, 4(sp)            # restaurar o ra
         lw s1, 8(sp)
-        addi sp, sp ,12          # desalocar o stack
+        addi sp, sp ,12         # desalocar o stack
         jr ra                   # voltar para a chamada
