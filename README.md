@@ -9,7 +9,7 @@ Dúvidas/Questões:
 
  -> na função read_file como podemos substituir o code 41? fechamos o ficheiro? E com o código 63 o que devemos fazer se devolver -1.parse_matrix_buffer é deixar tipo 'buffer esparguete já convertida'
 
- -> que função é esta que estã por definir advance_to_next_token ??? dá erro de compilação
+ -> que função é esta que está por definir advance_to_next_token ??? dá erro de compilação
 
 
 Não esquecer (no fim):
