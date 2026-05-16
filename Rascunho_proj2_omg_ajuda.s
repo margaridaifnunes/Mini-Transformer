@@ -337,14 +337,13 @@ tokens_to_indices:
     mv s1, a3               # não perder o inicio do vocabulário
     mv s2, a2               # não perder o inicio do input a analizar
 
-    li t2, 0                # inicializa a flag a 0
     li t3, 0                # tamanho do vetor
     li t4, 0                # contador do indice do vocabulário
 
     loop_input:
-        li t2, 0                    # inicializa a flag a 0
+        li t1, 0(a2)                # analiza o t1
         li t0, CONST_CHAR_NEWLINE   # codigo do Newline
-            beq t1, t0,new_line          # se t1 é '\n'
+            beq t1, t0,new_line     # se t1 é '\n'
 
         li t0, CONST_CHAR_EOF       # codigo do EOF
             beq t1, t0, end_loop    # se t1 é EOF
@@ -355,32 +354,35 @@ tokens_to_indices:
         lb  t1, 0(a2)               # bit do input a analizar
 
         li t0, CONST_CHAR_EOF       # codigo do EOF
-            beq t1, t0, end_loop    # se t1 é EOF
+            beq t5, t0, end_loop    # se t5 é EOF
 
         loop_letter:
-            bne t1,t5,next_vocab_word
-            li t0, CONST_CHAR_NEWLINE   # codigo do Newline
-                beq t1, t0,new_line          # se t1 é '\n'
-            addi a3, a3,1
-            addi a0, a0, 1
-            j loop_vocab  
+            bne t1,t5,next_vocab_word #verifica se os bytes saõ iguais
 
-    new_line:
-        beq t2 ,x0, add_word        # caso haja sucesso proximo input
-        li t2, 1
+            li t0, CONST_CHAR_NEWLINE   # codigo do Newline
+                beq t1, t0,add_word     # se t1 é '\n'
+            li t0, CONST_CHAR_SPACE     # codigo do SPACE
+                beq t1, t0, add_word    # se t1 é ' '
+            
+            addi a3, a3,1
+            addi a2, a2, 1
+            lb  t5, 0(a3)       # proximo bit do vocab a analizar
+            lb  t1, 0(a2)       # proximo bit do input a analizar
+            j loop_letter  
 
     add_word:
-        addi t3, t3 ,1              # incrementa o tamanho do vetor 
         sw t4, 0(a0)
-        addi a0, a0, 4
+        addi t3, t3 ,1              # incrementa o tamanho do vetor 
+        addi a0, a0, 4              # incrementa o endereço da matriz
         j next_input_word
         
-    next_vocab_word: 
-        lb t5, 0(a3)
-        addi t4, t4, 1              # t4 = t4 + imm
-        li t0, CONST_CHAR_NEWLINE   # codigo do Newline
-        addi a3, a3, 1              # proximo bit (á frente do newline)
-        bne t5, t0, next_vocab_word # verifica se é igual a newline
+    next_vocab_word:
+        addi t4, t4, 1  # t4 = t4 + imm
+        ignore_line:
+            lb t5, 0(a3)    
+            li t0, CONST_CHAR_NEWLINE   # codigo do Newline
+            addi a3, a3, 1              # proximo bit (á frente do newline)
+            bne t5, t0, ignore_line # verifica se é igual a newline
         mv a2, s2                   # voltar ao inicio da palavra a analizar
         j loop_vocab
 
