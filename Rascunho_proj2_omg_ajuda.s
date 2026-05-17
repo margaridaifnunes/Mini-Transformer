@@ -43,13 +43,13 @@
 # Data section with static memory reservations.
 # Feel free to add more if needed.
 ###########################################################################
-VOCABULARY_FILENAME:     .string "vocab.txt"
-EMBEDDINGS_FILENAME:     .string "embeddings.txt"
-INPUT_FILENAME:          .string "input.txt"
+VOCABULARY_FILENAME:     .string "C:\Users\halsg\IAC\P2_skeleton\vocab.txt"
+EMBEDDINGS_FILENAME:     .string "C:\Users\halsg\IAC\P2_skeleton\embeddings.txt"
+INPUT_FILENAME:          .string "C:\Users\halsg\IAC\P2_skeleton\input.txt"
 
-W_Q_FILENAME:            .string "W_Q.txt"
-W_K_FILENAME:            .string "W_K.txt"
-W_V_FILENAME:            .string "W_V.txt"
+W_Q_FILENAME:            .string "C:\Users\halsg\IAC\P2_skeleton\W_Q.txt"
+W_K_FILENAME:            .string "C:\Users\halsg\IAC\P2_skeleton\W_K.txt"
+W_V_FILENAME:            .string "C:\Users\halsg\IAC\P2_skeleton\W_V.txt"
 
 VOCAB_BUFFER:            .zero CONST_BUFFER_SIZE                              # Contents of the vocabulary file
 INPUT_BUFFER:            .zero CONST_BUFFER_SIZE                              # Contents of the input file
@@ -191,9 +191,9 @@ main:
     ###########################################################################
     la a0, Q_MATRIX
     mv a1, s5
-    li a2, s4
+    mv a2, s4
     li a3, 4
-    la a4, s2
+    mv a4, s2
     li a5, 4
     li a6, 4
 
@@ -203,10 +203,10 @@ main:
     ###########################################################################
     la a0, K_MATRIX
     mv a1, s5
-    li a2, s4
+    mv a2, s4
     li a3, 4
-    la a4, s8
-    li a5, s7
+    mv a4, s8
+    mv a5, s7
     li a6, 4
 
     jal ra, matrix_multiply
@@ -216,10 +216,10 @@ main:
     ###########################################################################
     la a0, V_MATRIX
     mv a1, s5
-    li a2, s4
+    mv a2, s4
     li a3, 4
-    la a4, s6
-    li a5, s9
+    mv a4, s6
+    mv a5, s9
     li a6, 4
 
     jal ra, matrix_multiply
@@ -519,13 +519,13 @@ matrix_multiply:
     sw s4, 16(sp)
     sw s6, 20(sp)
 
-    blez a5, exit_with_error
-    blez a2, exit_with_error
-    bne a3, a5, exit_with_error
+    #blez a5, exit_with_error
+    #blez a2, exit_with_error
+    #bne a3, a5, exit_with_error
 
     # store dos argumentos
     mv s0, a0               
-    mv s1, A1
+    mv s1, a1
     mv s2, a2
     mv s4, a4
     mv s6, a0       #ponteiro definitivo da matriz a preencher
@@ -533,7 +533,7 @@ matrix_multiply:
     la t3, ROW_VECTOR               #vetor col
     la t4, COLUMN_VECTOR            # vetor colunas
     loop_matrix:  
-        beqz s2, matrix_end         # se não houver mais linhas
+        beqz s2, matrix_mult_end         # se não houver mais linhas
         addi s2, s2, -1             # vai decrementando o contador de linhas
         mv a1 ,s1                   # mete o a1 como endereço da linha
         addi s1, s1 ,16             # mete o s1 na próxima linha
@@ -884,7 +884,7 @@ print_predicted_token:
 print_predicted_token_skip:
     beq s0, zero, print_predicted_token_read
     mv a0, s1                                       # a0 = current position in vocab buffer
-    jal advance_to_next_token                       # a0 = next token start
+    #jal advance_to_next_token                       # a0 = next token start
     mv s1, a0                                       # update current position
     addi s0, s0, -1
     j print_predicted_token_skip
