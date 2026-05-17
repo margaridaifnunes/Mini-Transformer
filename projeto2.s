@@ -198,7 +198,39 @@ main:
 # (in/out) a1: destination buffer
 # (in)     a2: maximum number of bytes to read
 read_file:
-    # TODO
+    addi sp,sp,-16
+    sw ra, 12(sp)
+    sw a1, 8(sp)
+    sw a2, 4(sp)
+
+    # Abrir o ficheiro:
+    li a1, 0                    # flag a zero 
+    li a7, CONST_SYSCALL_OPEN   # open
+    ecall                       # a0 = fd (fd < 0 se houve erro)
+
+    # verificar se fd é válido (fd >= 0):
+    blt a0, x0, invalid_fd  # fd < 0
+    sw a0, 0(sp)            # guardar fd na stack para depois fazer close
+
+    # Ler o ficheiro:
+    lw a1, 8(sp)                # restaurar o endereço do buffer
+    lw a2, 4(sp)                # restaurar o tamanho
+    li a7, CONST_SYSCALL_READ   # ler o ficheiro (a0 = fd, a1 = buffer, a2 = maximum number of bytes to read)
+    ecall
+
+    # Fechar o ficheiro:
+    lw a0, 0(sp)
+    li a7, CONST_SYSCALL_CLOSE
+    ecall
+
+    # Restaurar a stack:
+    lw ra, 12(sp)
+    addi sp, sp, 16
+    jr ra
+
+invalid_fd:
+    li a7, CONST_SYSCALL_EXIT2
+    ecall
 
 # Assumes the matrix is stored in the buffer as space-separated integers.
 # Assumes columns are separated by 1 space (' '), and rows by 1 newline ('\n').
