@@ -11,6 +11,9 @@ Dúvidas/Questões:
 
  -> que função é esta que está por definir advance_to_next_token ??? dá erro de compilação
 
+ -> verificações com blez são necessárias na matrix_multiply? ou como é dito que os ficheiros são bem-formados 
+    não é necessário??
+
 
 Não esquecer (no fim):
  - comentar tudo em inglês ou tudo em ptpt
