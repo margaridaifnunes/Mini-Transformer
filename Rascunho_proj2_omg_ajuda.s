@@ -161,8 +161,8 @@ main:
     la a1, MATRIX_BUFFER
     
     jal ra, parse_matrix_buffer
-    mv s4, a0                   # salva o endereço da matriz    
-    #mv s7, a1               
+    mv s10, a0                   # salva o endereço da matriz    
+    mv s4, a1               
     ###########################################################################
     # Convert input tokens to indices
     ###########################################################################
@@ -181,7 +181,7 @@ main:
     #a3 -> NUMERO DE TOKENS
     mv a2, a0                       # a2 -> penteiro dos inpits (input)
     mv a3, a1                       # a3 -> tamanhodo vetor (numero de tokens)
-    mv a1, s4                       # a1 -> matriz do vocab preenchinda
+    mv a1, s10                       # a1 -> matriz do vocab preenchinda
     la a0, INPUT_EMBEDDINGS_MATRIX
     
     jal ra, build_input_embeddings_matrix
@@ -393,7 +393,7 @@ tokens_to_indices:
             beq t1, t0,next_input_word     # se t1 é '\n'
 
         li t0, CONST_CHAR_EOF       # codigo do EOF
-            beq t1, t0, end_loop    # se t1 é EOF
+            beq t1, t0, end_loop_tokens    # se t1 é EOF
 
 
     loop_vocab:
@@ -401,7 +401,7 @@ tokens_to_indices:
         lb  t1, 0(a2)               # bit do input a analizar
 
         li t0, CONST_CHAR_EOF       # codigo do EOF
-            beq t5, t0, end_loop    # se t5 é EOF
+            beq t5, t0, end_loop_tokens    # se t5 é EOF
 
         loop_letter:
             bne t1,t5,next_vocab_word #verifica se os bytes saõ iguais
@@ -446,7 +446,7 @@ tokens_to_indices:
 
 
 
-    end_loop:
+    end_loop_tokens:
         mv a0, s0           # a0 para s0
         mv a1, t3           # a1 para o tamanho do vetor
         lw ra, 0(sp)
@@ -467,9 +467,10 @@ build_input_embeddings_matrix:
     #a2 -> PONTEIRO MATRIZ INPUTS
     #a3 -> NUMERO DE TOKENS
     addi sp, sp, -12
-    sw s1, 8(sp)
+    sw s1, 8(sp)    
     sw s0, 4(sp)
     sw ra, 0(sp)
+    
 
     mv s0, a0                   # endereço da matriz a preencher
     mv s1, a1                   # inicio da matriz embedings vocab
@@ -477,7 +478,7 @@ build_input_embeddings_matrix:
     li t0, 0                    # indice dos tokens
     li t2, 0                    # offset
     loop_indice_vector:
-        bge t0, a3,end_loop     # se o indice é superior ao limite
+        bge t0, a3,end_indice_loop     # se o indice é superior ao limite
         mv a1, s1               # voltar ao inicio da embeding
         lw t1, 0(a2)            # o conteudo do endereço do dos inputs
         slli t2, t1, 4          # calcula o offset
@@ -540,6 +541,7 @@ matrix_multiply:
         addi s1, s1 ,16             # mete o s1 na próxima linha
         li t1, 4                    # indice das colunas
         la a2, COLUMN_VECTOR        # inicia o vetor coluna
+        mv t5, a2
         loop_column:
             beqz t1, loop_matrix    # se não houver mais colunas
             li t2, 4                # decrementador de elementos da coluna
@@ -554,8 +556,8 @@ matrix_multiply:
                 addi t2, t2, -1     # decrementa o contador
                 j loop_value        # volta a fazer para o resto dos valores
 
-        apply_dot:
-            addi a2,a2, -16         # volta a apontar para o inicio do veto colunas      
+        apply_dot:   
+            mv a2, t5   
             li a3, 4                # inicia o tamnho do vetor a analizar
             jal ra, dot             # chama o procedimento "dot"
             sw a1, 0(s0)            # insere o resultado na matriz final
@@ -573,6 +575,7 @@ matrix_multiply:
         lw s4, 16(sp)
         lw s6, 20(sp)
         addi sp, sp, 24
+        jr ra
 # (in/out) a0: address of the output scores vector to fill (int*)
 # (in)     a1: address of Q matrix (int*)
 # (in)     a2: address of K matrix (int*)
