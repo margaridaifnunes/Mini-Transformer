@@ -75,77 +75,146 @@ main:
     ###########################################################################
     # Read vocabulary
     ###########################################################################
-    # TODO
-
+    la a0, VOCABULARY_FILENAME  # coloca o adress o ficheiro do vocabulário
+    la a1, VOCAB_BUFFER         # coloca o adress onde vai colocar o buffer do ficheiro
+    li a2, CONST_BUFFER_SIZE    # coloca em a2 o número máximo de bytes a ler
+    
+    jal ra, read_file
+    mv s0, a1
     ###########################################################################
     # Read input
     ###########################################################################
-    # TODO
-
+    la a0, INPUT_FILENAME       # coloca o adress o ficheiro do input
+    la a1, INPUT_BUFFER         # coloca o adress onde vai colocar o buffer do ficheiro
+    li a2, CONST_BUFFER_SIZE    # coloca em a2 o número máximo de bytes a ler
+    
+    jal ra, read_file
+    mv s1, a1                   # salva o buffer do input
     ###########################################################################
     # Read W_Q matrix
     ###########################################################################
-    # TODO
+    la a0, W_Q_FILENAME       # coloca o adress o ficheiro do input
+    la a1, MATRIX_BUFFER         # coloca o adress onde vai colocar o buffer do ficheiro
+    li a2, CONST_BUFFER_SIZE    # coloca em a2 o número máximo de bytes a ler
 
+    jal ra, read_file
     ###########################################################################
     # Parse W_Q matrix from buffer
     ###########################################################################
-    # TODO
+    la a0, W_Q_MATRIX
 
+    jal ra, parse_matrix_buffer
+    mv s2, a0 
     ###########################################################################
     # Read W_K matrix
     ###########################################################################
-    # TODO
+    la a0, W_K_FILENAME       # coloca o adress o ficheiro do input
+    la a1, MATRIX_BUFFER         # coloca o adress onde vai colocar o buffer do ficheiro
+    li a2, CONST_BUFFER_SIZE    # coloca em a2 o número máximo de bytes a ler
 
+    jal ra, read_file
     ###########################################################################
     # Parse W_K matrix from buffer
     ###########################################################################
-    # TODO
+    la a0, W_K_MATRIX
 
+    jal ra, parse_matrix_buffer
+    mv s7, a1
+    mv s8, a0
     ###########################################################################
     # Read W_V matrix
     ###########################################################################
-    # TODO
-
+    la a0, W_V_FILENAME       # coloca o adress o ficheiro do input
+    la a1, MATRIX_BUFFER         # coloca o adress onde vai colocar o buffer do ficheiro
+    li a2, CONST_BUFFER_SIZE    # coloca em a2 o número máximo de bytes a ler
+    
+    jal ra, read_file
     ###########################################################################
     # Parse W_V matrix from buffer
     ###########################################################################
-    # TODO
+    la a0, W_V_MATRIX
 
-    ###########################################################################
+    jal ra, parse_matrix_buffer
+    mv s6, a0
+    mv s9, a1
+     ###########################################################################
     # Read embeddings matrix
     ###########################################################################
-    # TODO
+    la a0, EMBEDDINGS_FILENAME   # coloca o adress o ficheiro do input
+    la a1, MATRIX_BUFFER         # coloca o adress onde vai colocar o buffer do ficheiro
+    li a2, CONST_BUFFER_SIZE     # coloca em a2 o número máximo de bytes a ler
 
+    jal ra, read_file
+    mv s3, a1                   # salva o buffer da matriz
     ###########################################################################
     # Parse vocabulary embeddings matrix from buffer
     ###########################################################################
-    # TODO
-
+    la a0, VOCAB_EMBEDDINGS_MATRIX  
+    la a1, MATRIX_BUFFER
+    
+    jal ra, parse_matrix_buffer
+    mv s10, a0                   # salva o endereço da matriz    
+    mv s4, a1               
     ###########################################################################
     # Convert input tokens to indices
     ###########################################################################
-    # TODO
+    mv a3, s0                   # vai buscar o buffer do vocabulario
+    mv a2, s1                   #vai buscar o buffer dos inputs
+    la a0, INPUT_INDICES_VECTOR
+   
+    
 
+    jal ra, tokens_to_indices
     ###########################################################################
     # Build input embeddings matrix
     ###########################################################################
-    # TODO
-
+    #a1 -> PONTIERO PARA MATRIZ EMBEDIG
+    #a2 -> PONTEIRO MATRIZ INPUTS
+    #a3 -> NUMERO DE TOKENS
+    mv a2, a0                       # a2 -> penteiro dos inpits (input)
+    mv a3, a1                       # a3 -> tamanhodo vetor (numero de tokens)
+    mv a1, s10                       # a1 -> matriz do vocab preenchinda
+    la a0, INPUT_EMBEDDINGS_MATRIX
+    
+    jal ra, build_input_embeddings_matrix
+    mv s5, a0
     ###########################################################################
     # Build matrix Q
     ###########################################################################
-    # TODO
+    la a0, Q_MATRIX
+    mv a1, s5
+    mv a2, s4
+    li a3, 4
+    mv a4, s2
+    li a5, 4
+    li a6, 4
 
+    jal ra, matrix_multiply
     ###########################################################################
     # Build matrix K
     ###########################################################################
-    # TODO
+    la a0, K_MATRIX
+    mv a1, s5
+    mv a2, s4
+    li a3, 4
+    mv a4, s8
+    mv a5, s7
+    li a6, 4
+
+    jal ra, matrix_multiply
 
     ###########################################################################
     # Build matrix V
     ###########################################################################
-    # TODO
+    la a0, V_MATRIX
+    mv a1, s5
+    mv a2, s4
+    li a3, 4
+    mv a4, s6
+    mv a5, s9
+    li a6, 4
+
+    jal ra, matrix_multiply
 
     ###########################################################################
     # Compute scores for the last input token
@@ -178,7 +247,40 @@ main:
 # (in/out) a1: destination buffer
 # (in)     a2: maximum number of bytes to read
 read_file:
-    # TODO
+    addi sp,sp,-16
+    sw ra, 12(sp)
+    sw a1, 8(sp)
+    sw a2, 4(sp)
+    
+    # Abrir o ficheiro:
+    li a1, 0     # flag a zero 
+    li a7, 1024  # open
+    ecall        # a0 = fd (fd < 0 se houve erro)
+    
+    # verificar se fd é válido (fd >= 0):
+    blt a0, x0, invalid_fd  # fd < 0 (error 41)
+    sw a0, 0(sp)            # guardar fd na stack para depois fazer close
+    
+    # Ler o ficheiro:
+    lw a1, 8(sp)  # restaurar o endereço do buffer
+    lw a2, 4(sp)  # restaurar o tamanho
+    li a7, 63     # ler o ficheiro (a1 = filename adress, a2 = maximum number of bytes to read)
+    ecall
+    
+    # Fechar o ficheiro:
+    lw a0, 0(sp)
+    li a7, 57
+    ecall
+    
+    # Restaurar a stack:
+    lw ra, 12(sp)
+    addi sp, sp, 16
+    jr ra
+    
+invalid_fd: 
+  li a7, 93
+  ecall
+
 
 # Assumes the matrix is stored in the buffer as space-separated integers.
 # Assumes columns are separated by 1 space (' '), and rows by 1 newline ('\n').
@@ -187,7 +289,70 @@ read_file:
 # (out)    a1: number of rows in the matrix (int)
 # (in)     a1: address of the buffer containing the matrix data (char*)
 parse_matrix_buffer:
-    # TODO
+    addi sp ,sp -12              # reserva 12 bytes para a stack
+    sw ra, 0(sp)
+    sw s0, 4(sp)
+    sw s1, 8(sp)
+    mv s0, a0
+    li t2, 0
+    li t3 ,1                    # t3 é o sinal do numero
+    li t5, 10
+    li s1, 0
+
+    loop_byte:
+        lb t1, 0(a1)            # t1 = byte a anilzar 
+        li t0,CONST_CHAR_SPACE      # codigo do space
+            beq t1, t0, space   # se t1 é ' '
+
+        li t0, CONST_CHAR_NEWLINE   # codigo do Newline
+            beq t1, t0,new_row     # se t1 é '\n'
+
+        li t0, CONST_CHAR_EOF       # codigo do EOF
+            beq t1, t0, loop_end    # se t1 é EOF
+            
+        li t0, CONST_CHAR_HYPHEN    # codigo do '-'
+            beq t1, t0, negative    # se t1 e '-'
+        #conversão
+
+        
+        li t0, CONST_CHAR_ZERO
+        sub t1,t1, t0                #converter para ASCII ( t1 - 48 ('0'))
+        
+        mul s1, s1, t5               # multiplicar por 10 (X t5)
+        add s1,s1,t1                 # adicionar o dígito atrás do número
+        j next_digit                 #vai para o proximo digito
+    
+    
+    space:
+        mul s1, s1 ,t3              # + - s1
+        mul t3,t3,t3                # t3 ->1 (independentemente do sinal)                 
+        sw s1, 0(a0)                #guarda o s1
+        li s1, 0                    # mete o s1 a 0
+        addi a0, a0, 4              # aumenta o endereço do
+        j next_digit
+
+    negative:
+        li t3, -1                   # o numero asseguir vai ser negativo
+    
+    next_digit:
+        addi a1 ,a1 ,1              # vai para o proximo byte
+        j loop_byte                 # volta para o loop
+
+    new_row:
+        addi t2 ,t2 ,1          # +1 row
+        j space
+    loop_end:
+        addi t2, t2, 1         # adicionar mais 1 se for o fim
+        mul s1, s1, t3
+        sw s1, 0(a0)
+        addi a0, a0, 4
+        mv a1 ,t2
+        mv a0, s0
+        lw ra, 0(sp)
+        lw s0, 4(sp)            # rstaurar o ra
+        lw s1, 8(sp)
+        addi sp, sp ,12          # desalocar o stack
+        jr ra                   # voltar para a chamada
 
 # Converts the input tokens into their corresponding indices in the vocabulary.
 # (in/out) a0: address of input indices vector to fill (int*)
@@ -195,14 +360,131 @@ parse_matrix_buffer:
 # (in)     a2: address to input buffer
 # (in)     a3: address to vocabulary buffer
 tokens_to_indices:
-    # TODO
+    # a0 -> PONIRO PARA MATRIZ A PREENCHER
+    # a2 -> PONTEIROO PARAAA INPUT
+    # a3 -> PONTERIO PARA O VOCABULÁRIO
+
+    addi sp, sp, -16
+    sw ra, 0(sp)
+    sw s0, 4(sp)
+    sw s1, 8(sp)
+    sw s2, 12(sp)
+
+    mv s0, a0               # não perder o inicio da matriz a encher
+    mv s1, a3               # não perder o inicio do vocabulário
+    mv s2, a2               # não perder o inicio do input a analizar
+
+    li t3, 0                # tamanho do vetor
+    li t4, 0                # contador do indice do vocabulário
+
+    loop_input:
+        lb t1, 0(a2)                # analiza o t1
+        li t0, CONST_CHAR_NEWLINE   # codigo do Newline
+            beq t1, t0,next_input_word     # se t1 é '\n'
+
+        li t0, CONST_CHAR_EOF       # codigo do EOF
+            beq t1, t0, end_loop_tokens    # se t1 é EOF
+
+    loop_vocab:
+        lb  t5, 0(a3)               # bit do vocab a analizar
+        lb  t1, 0(a2)               # bit do input a analizar
+
+        li t0, CONST_CHAR_EOF       # codigo do EOF
+            beq t5, t0, end_loop_tokens    # se t5 é EOF
+
+        loop_letter:
+            bne t1,t5,next_vocab_word #verifica se os bytes são iguais
+
+            li t0, CONST_CHAR_NEWLINE   # codigo do Newline
+                beq t1, t0,add_word     # se t1 é '\n'
+            li t0, CONST_CHAR_SPACE     # codigo do SPACE
+                beq t1, t0, add_word    # se t1 é ' '
+            
+            addi a3, a3,1
+            addi a2, a2, 1
+            lb  t5, 0(a3)       # proximo bit do vocab a analizar
+            lb  t1, 0(a2)       # proximo bit do input a analizar
+            j loop_letter  
+
+    add_word:
+        sw t4, 0(a0)
+        addi t3, t3 ,1              # incrementa o tamanho do vetor 
+        addi a0, a0, 4              # incrementa o endereço da matriz
+        j next_input_word
+        
+    next_vocab_word:
+        addi t4, t4, 1  # t4 = t4 + imm
+
+        ignore_line:
+            addi a3, a3, 1              # proximo bit (à frente do newline)
+            lb t5, 0(a3)    
+            li t0, CONST_CHAR_NEWLINE   # codigo do Newline
+            bne t5, t0, ignore_line # verifica se é igual a newline
+        mv a2, s2                   # voltar ao inicio da palavra a analizar
+        addi a3, a3,1
+        j loop_vocab
+
+    next_input_word: # meter o apontador (a2) na posiçao do proximo bit
+        addi a2,a2, 1
+        mv t4, x0
+        mv s2, a2
+        mv a3, s1
+        j loop_input
+
+    end_loop_tokens:
+        mv a0, s0           # a0 para s0
+        mv a1, t3           # a1 para o tamanho do vetor
+        lw ra, 0(sp)
+        lw s0, 4(sp)
+        lw s1, 8(sp)
+        lw s2, 12(sp)
+        addi sp, sp, 16
+        jr ra
 
 # (in/out) a0: address of the output matrix to fill (int*)
 # (in)     a1: address of the vocabulary embeddings matrix (int*)
 # (in)     a2: address of the input indices array (int*)
 # (in)     a3: number of tokens in the input (int)
 build_input_embeddings_matrix:
-    # TODO
+    #a1 -> PONTIERO PARA MATRIZ EMBEDIG
+    #a2 -> PONTEIRO MATRIZ INPUTS
+    #a3 -> NUMERO DE TOKENS
+    addi sp, sp, -12
+    sw s1, 8(sp)    
+    sw s0, 4(sp)
+    sw ra, 0(sp)
+    
+
+    mv s0, a0                   # endereço da matriz a preencher
+    mv s1, a1                   # inicio da matriz embedings vocab
+
+    li t0, 0                    # indice dos tokens
+    li t2, 0                    # offset
+    loop_indice_vector:
+        bge t0, a3,end_indice_loop     # se o indice é superior ao limite
+        mv a1, s1               # voltar ao inicio da embeding
+        lw t1, 0(a2)            # o conteudo do endereço do dos inputs
+        slli t2, t1, 4          # calcula o offset
+        add a1, a1, t2         # o ponteiro final na matriz embedigs
+        li t3, 4                # contador dos elementos por linha 
+        addi t0, t0 ,1          # incrementa o indice
+        addi a2, a2, 4          # proximo input    
+        adding_number:
+            beqz t3, loop_indice_vector # se t3 == 0 -> fim da linha
+            lw t2, 0(a1)                # conteudo do embeding
+            sw t2, 0(a0)                # insere na matriz (a0)
+            addi a0, a0 ,4              # incrementa o ponteiro da matriz (a0)
+            addi a1, a1, 4              # incrementa o ponteiro do embeding
+            addi t3, t3, -1             # decrementa o contador
+            j adding_number
+
+    end_indice_loop:
+    mv a0, s0                           # retornar o ponteiro para a matriz
+    lw ra, 0(sp)
+    lw s0, 4(sp)
+    lw s1, 8(sp)
+    addi sp, sp, 12
+    jr ra
 
 # (in/out) a0: address of the output matrix to fill (int*)
 # (in)     a1: address of the first matrix (int*)
