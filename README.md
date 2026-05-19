@@ -10,3 +10,5 @@ Dúvidas/Questões:
 Não esquecer (no fim):
  - comentar tudo em inglês ou tudo em ptpt
  - TAREFA 9 do guião do projeto
+ - reler comments e rever linhas comentadas de erros... criar um code_93 no final para
+   evitar duplicação de código.
