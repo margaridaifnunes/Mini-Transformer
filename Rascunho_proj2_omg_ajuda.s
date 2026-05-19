@@ -521,20 +521,25 @@ matrix_multiply:
     sw s3, 16(sp)
     sw s4, 20(sp)
     sw s6 ,24(sp)
-
-    
     sw s5, 28(sp)           # preparar para meter os contador de colunas
     sw s7, 32(sp)           # preparar para meter o contador de leemtnos
     sw s8, 36(sp)
     sw s9, 40(sp)           # guardar o indereço da matriz
     # store dos argumentos
-    mv s5, a6               # indice das colunas
-    mv s0, a0               
+    mv s0, a0
     mv s1, a1
-    mv s8, a2
-    mv s2, s8
+    mv s2,a2
+    mv s8, a3
     mv s9, a4
-    mv s6, a0       #ponteiro definitivo da matriz a preencher
+    mv s5, a6
+    mv s6, so
+    
+    #mv s5, a6               # indice das colunas
+    #mv s0, a0               
+    #mv s8, a2
+    #mv s2, s8
+    #mv s9, a4
+    #mv s6, a0       #ponteiro definitivo da matriz a preencher
 
     #blez a5, exit_with_error
     #blez a2, exit_with_error
@@ -625,6 +630,7 @@ matrix_multiply:
         lw s5, 28(sp)
         lw s7, 32(sp)
         lw s8, 36(sp)
+        lw s9, 40(sp)
         addi sp, sp, 44
         jr ra
 # (in/out) a0: address of the output scores vector to fill (int*)
