@@ -253,7 +253,7 @@ main:
     # FUNCTION READ_FILE:
 
 # Read from a text file into a buffer. 
-# (in)  a0: filename address (char*) 
+# (in)     a0: filename address (char*) 
 # (in/out) a1: destination buffer 
 # (in)     a2: maximum number of bytes to read
 read_file: 
@@ -689,7 +689,13 @@ compute_scores_end:
 # (in)  a3: #cols (int)
 # (in)  a4: target row
 select_vector_in_matrix:
-    # TODO
+    bgt a4, a2, invalid_row
+    mul t0, a4, a3
+    slli t0, t0, 2
+    add a0, a1, t0
+
+invalid_row:
+    
 
 # (out) a0: index of the predicted token in the vocabulary (int)
 # (in)  a0: address of target vector (int*)
