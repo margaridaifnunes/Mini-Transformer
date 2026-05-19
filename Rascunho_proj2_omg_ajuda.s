@@ -167,7 +167,7 @@ main:
     # Convert input tokens to indices
     ###########################################################################
     mv a3, s0                   # vai buscar o buffer do vocabulario
-    mv a2, s1                   #vai buscar o buffer dos inputs
+    mv a2, s1                   # vai buscar o buffer dos inputs
     la a0, INPUT_INDICES_VECTOR
    
     
@@ -521,14 +521,14 @@ matrix_multiply:
     sw s3, 16(sp)
     sw s4, 20(sp)
     sw s6 ,24(sp)
-    #blez a5, exit_with_error
-    #blez a2, exit_with_error
-    #bne a3, a5, exit_with_error
+
+    
     sw s5, 28(sp)           # preparar para meter os contador de colunas
     sw s7, 32(sp)           # preparar para meter o contador de leemtnos
     sw s8, 36(sp)
     sw s9, 40(sp)           # guardar o indereço da matriz
     # store dos argumentos
+    mv s5, a6               # indice das colunas
     mv s0, a0               
     mv s1, a1
     mv s8, a2
@@ -536,35 +536,49 @@ matrix_multiply:
     mv s9, a4
     mv s6, a0       #ponteiro definitivo da matriz a preencher
 
+    #blez a5, exit_with_error
+    #blez a2, exit_with_error
+    bne a3, a5, exit_with_error
+
     loop_matrix:  
-        beqz s2, matrix_mult_end         # se não houver mais linhas
+        beqz s2, matrix_mult_end    # se não houver mais linhas
         addi s2, s2, -1             # vai decrementando o contador de linhas
-        mv a1 ,s1                   # mete o a1 como endereço da linha
-        li s5, 4                    # indice das colunas
-        mv t5, a2
+        mv a1 ,s1                   # mete o a1 como endereço da linha  
+        mv s3, s5          
+        #mv t5, a2
         mv s4, s9                   #volta ao inicio
+        slli t0, s5, 2
+        sub s4, s4, t0
         loop_column:
             mv a1, s1
             la a2, COLUMN_VECTOR    # inicia o vetor coluna
-            beqz s5, next_line_matrix    # se não houver mais colunas
-            mv s7,                 # decrementador de elementos da coluna
-            addi s4, s4, -16        # anda uma coluna para traz (para funcinar no primeiro caso)
-            addi s5, s5, -1         # decrementa o número de colunas
+            beqz s3, next_line_matrix    # se não houver mais colunas
+            mv s7, s8                # decrementador de elementos da coluna
+            addi s3, s3, -1         # decrementa o contador de colunas
+            slli t0, s5, 2
+            add s4, s4, t0
             loop_value:
                 beqz s7, apply_dot  # se não houver mais elementos da coluna
-                addi s4, s4, 16     # aumneta a linha
                 lw t4, 0(s4)        # dá load do elemento da coluna
                 sw t4, 0(a2)        # dá save desse valor no vetor coluna
                 addi a2,a2, 4       # incremnte o endereço do vetor colunas
+                slli t0, t0,4
+                add s4, s4, t0
                 addi s7, s7, -1     # decrementa o contador
                 j loop_value        # volta a fazer para o resto dos valores
         next_line_matrix:
-             addi s1, s1 ,16             # mete o s1 na próxima linha
-             j loop_matrix
+            slli t0, s8, 2
+            addi s1, s1 ,t0             # mete o s1 na próxima linha
+            j loop_matrix
+
         apply_dot:
-            addi a2, a2, -16  
-            li a3, 4                # inicia o tamnho do vetor a analizar
-            #jal ra, print_matrices
+            slli t1, t5, 2  
+            mul t1, t1,s8
+            addi s4, s4, -1
+            la a2, COLUMN_VECTOR
+            mv a1, s1
+            li a3, s8                # inicia o tamnho do vetor a analizar
+#jal ra, print_matrices
             jal ra, dot             # chama o procedimento "dot"
             sw a1, 0(s0)            # insere o resultado na matriz final
             addi s0, s0, 4          # incrementa o elemento da matriz
@@ -597,9 +611,9 @@ matrix_multiply:
       jr ra
 
     matrix_mult_end:
-        mv a0, s6
-        li a1, 4
-        li a2, 4
+        #mv a0, s6
+        #li a1, 4
+        #li a2, 4
         jal ra, print_matrix
         lw ra, 0(sp)
         lw s0 ,4(sp)
