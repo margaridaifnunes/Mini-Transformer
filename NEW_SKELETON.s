@@ -43,14 +43,6 @@
 # Data section with static memory reservations.
 # Feel free to add more if needed.
 ###########################################################################
-VOCABULARY_FILENAME:     .string "vocab.txt"
-EMBEDDINGS_FILENAME:     .string "embeddings.txt"
-INPUT_FILENAME:          .string "input.txt"
-
-W_Q_FILENAME:            .string "W_Q.txt"
-W_K_FILENAME:            .string "W_K.txt"
-W_V_FILENAME:            .string "W_V.txt"
-
 VOCAB_BUFFER:            .zero CONST_BUFFER_SIZE                              # Contents of the vocabulary file
 INPUT_BUFFER:            .zero CONST_BUFFER_SIZE                              # Contents of the input file
 MATRIX_BUFFER:           .zero CONST_BUFFER_SIZE                              # Contents of a matrix file (used for W_Q, W_K, W_V, and embeddings)
@@ -69,6 +61,14 @@ W_V_MATRIX:              .zero (CONST_DIMENSION * CONST_DIMENSION * 4)        # 
 Q_MATRIX:                .zero (CONST_MAX_INPUT_TOKENS * CONST_DIMENSION * 4) # Q matrix (#tokens x dimension x 4 bytes)
 K_MATRIX:                .zero (CONST_MAX_INPUT_TOKENS * CONST_DIMENSION * 4) # K matrix (#tokens x dimension x 4 bytes)
 V_MATRIX:                .zero (CONST_MAX_INPUT_TOKENS * CONST_DIMENSION * 4) # V matrix (#tokens x dimension x 4 bytes)
+
+VOCABULARY_FILENAME:     .string "vocab.txt"
+EMBEDDINGS_FILENAME:     .string "embeddings.txt"
+INPUT_FILENAME:          .string "input.txt"
+
+W_Q_FILENAME:            .string "W_Q.txt"
+W_K_FILENAME:            .string "W_K.txt"
+W_V_FILENAME:            .string "W_V.txt"
 
 .text
 main:
