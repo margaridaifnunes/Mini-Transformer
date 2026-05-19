@@ -93,9 +93,9 @@ main:
     ###########################################################################
     # Read W_Q matrix
     ###########################################################################
-    la a0, W_Q_FILENAME       # coloca o adress o ficheiro do input
+    la a0, W_Q_FILENAME          # coloca o adress o ficheiro do input
     la a1, MATRIX_BUFFER         # coloca o adress onde vai colocar o buffer do ficheiro
-    li a2, CONST_BUFFER_SIZE    # coloca em a2 o número máximo de bytes a ler
+    li a2, CONST_BUFFER_SIZE     # coloca em a2 o número máximo de bytes a ler
 
     jal ra, read_file
     ###########################################################################
@@ -108,9 +108,9 @@ main:
     ###########################################################################
     # Read W_K matrix
     ###########################################################################
-    la a0, W_K_FILENAME       # coloca o adress o ficheiro do input
+    la a0, W_K_FILENAME          # coloca o adress o ficheiro do input
     la a1, MATRIX_BUFFER         # coloca o adress onde vai colocar o buffer do ficheiro
-    li a2, CONST_BUFFER_SIZE    # coloca em a2 o número máximo de bytes a ler
+    li a2, CONST_BUFFER_SIZE     # coloca em a2 o número máximo de bytes a ler
 
     jal ra, read_file
     ###########################################################################
@@ -124,8 +124,8 @@ main:
     ###########################################################################
     # Read W_V matrix
     ###########################################################################
-    la a0, W_V_FILENAME       # coloca o adress o ficheiro do input
-    la a1, MATRIX_BUFFER         # coloca o adress onde vai colocar o buffer do ficheiro
+    la a0, W_V_FILENAME         # coloca o adress o ficheiro do input
+    la a1, MATRIX_BUFFER        # coloca o adress onde vai colocar o buffer do ficheiro
     li a2, CONST_BUFFER_SIZE    # coloca em a2 o número máximo de bytes a ler
     
     jal ra, read_file
@@ -162,8 +162,6 @@ main:
     mv a2, s1                   #vai buscar o buffer dos inputs
     la a0, INPUT_INDICES_VECTOR
    
-    
-
     jal ra, tokens_to_indices
     ###########################################################################
     # Build input embeddings matrix
@@ -173,11 +171,12 @@ main:
     #a3 -> NUMERO DE TOKENS
     mv a2, a0                       # a2 -> penteiro dos inpits (input)
     mv a3, a1                       # a3 -> tamanhodo vetor (numero de tokens)
-    mv a1, s10                       # a1 -> matriz do vocab preenchinda
+    mv a1, s10                      # a1 -> matriz do vocab preenchinda
     la a0, INPUT_EMBEDDINGS_MATRIX
     
     jal ra, build_input_embeddings_matrix
     mv s5, a0
+    mv s10, a3                      # guardar o nº de tokens para select_vector
     ###########################################################################
     # Build matrix Q
     ###########################################################################
