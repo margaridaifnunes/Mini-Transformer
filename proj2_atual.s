@@ -536,9 +536,6 @@ matrix_multiply:
     mv s9, a4           # endereço base da matriz B (W)
     mv s5, a6           # #cols de B = número de colunas do output
  
-    # Verificar compatibilidade (a3 == a5); se não, termina com erro
-    bne a3, a5, mm_exit_error
- 
     # stride de uma linha de A em bytes = #cols_A * 4
     slli s6, s8, 2      # s6 = stride linha A = s8 * 4
  
@@ -587,34 +584,6 @@ next_line_matrix:
     add s1, s1, s6              # avançar s1 para a próxima linha de A (stride = s6)
     j loop_matrix
  
-mm_exit_error:
-    j exit_with_error
-
-print_matrices:
-  #adicionar something
-      sw s9, 52(sp)
-      sw s8, 56(sp)
-      sw a1, 48(sp)
-      sw a2, 44(sp)
-      
-      mv s9, ra
-      mv s8, a0
-      mv a0,a1
-      li a1, 1
-      li a2, 4
-      
-      jal ra, print_matrix
-      lw a0,44(sp)
-      jal ra,  print_matrix
-      
-      mv a0,s8
-      mv ra, s9
-      lw a1, 48(sp)
-      lw a2, 44(sp)
-      lw s9, 52(sp)
-      lw s8, 56(sp)
-      jr ra
-
 matrix_mult_end:
     lw ra,  0(sp)
     lw s0,  4(sp)
