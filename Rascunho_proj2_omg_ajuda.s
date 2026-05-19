@@ -186,6 +186,7 @@ main:
     
     jal ra, build_input_embeddings_matrix
     mv s5, a0
+    mv s11, a3            # verificarrrrrrrrrrrrrrrrrrrrrr (como assim 11 ??)
     ###########################################################################
     # Build matrix Q
     ###########################################################################
@@ -227,7 +228,15 @@ main:
     ###########################################################################
     # Compute scores for the last input token
     ###########################################################################
-    # TODO
+    la a0, SCORES_VECTOR
+    la a1, Q_MATRIX
+    la a2, K_MATRIX
+    mv a3, s11
+    li a4, 4
+    addi t0, s11, -1
+    mv a5, t0
+
+    jal ra, compute_scores
 
     ###########################################################################
     # Get the highest score index using argmax
