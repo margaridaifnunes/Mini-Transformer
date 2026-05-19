@@ -9,3 +9,4 @@ Dúvidas/Questões:
  ->  USAR SOMENTE O FICHEIRO NEW_SKELETON;
 Não esquecer (no fim):
  - comentar tudo em inglês ou tudo em ptpt
+ - TAREFA 9 do guião do projeto
