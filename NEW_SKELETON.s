@@ -575,7 +575,7 @@ matrix_multiply:
 # (in)     a4: #columns of Q and K (int)
 # (in)     a5: target token index for which we want to compute the score (int)
 compute_scores:
-    addi sp, sp, -36
+    addi sp, sp, -32
     sw ra, 0(sp)
     sw s0, 4(sp)        # para o offset da 
     sw s1, 8(sp)        # ponteiro para o Q
@@ -584,36 +584,45 @@ compute_scores:
     sw s4, 20(sp)
     sw s5, 24(sp)
     sw s6, 28(sp)
-    sw s7, 32(sp)
 
-    mv s1, a1
+    #beq a3,a4, erro
+    
+    mv s0, a0           # ponteiro de retorno
+    mv s1, a1           # ponteiro de Q
     mv s2, a2           # ponteiro de K
-    mv s3, a0
-    mv s6, a3           # para guardar o número de colunas
-    mv s7, a4           # para guardar o número de colunas
-    li s4, 0            # contador para os loops das multiplicações
+    mv s3, a3           # ponteiro de scores
+    mv s4, a4           # ponteiro FIXO do scores_vector
+    mv s5, a0     
+    
 
-    # para somar o offset ao ponteiro de Q
-    slli s0, s7, 2      # guarda em s0 a "distância" de uma coluna
-    mv s5, s0           # offset para K
-    mul s0, s0, a5      # guarda em s0 o offset 
-    add s1, s1, s0          # soma o offset ao ponteiro de Q que usamos
+    # Clacular Q[target] adress = Q[base] + Target * columns * 4 bytes
+    mul t0, a5, s4      # Target X columns
+    slli t0, t0, 2      # Traget X columns * 4 bytes
+    add s1, t0, s1      # soma o offset ao ponteiro de Q que usamos  
 
-loop_compute_scores:
-    beq s4, s6, compute_scores_end
-    mv a1, s1
-    mv a2, s2
-    mv a3, s7
-    jal ra, dot
-    # falta verificar se dá success
-    sw a1, 0(s3)
-    addi s3, s3, 4  # avança um byte
-    add s2, s2, s5
-    addi s4, s4, 1
-    j loop_compute_scores
+    
+
+    # score[j] = dot(Q[n-1], K[j])
+    li s6,0                             #s6 -> j
+    loop_compute_scores:
+        bge s6, s3, compute_scores_end # fazer o loop a3 vezes
+        # k[j]:
+            slli t0, s6, 4       # incremento para a linha seguinte
+            add t1, s2, t0      # ponteiro de K a multiplicar
+    
+        mv a1, s1
+        mv a2, t1
+        mv a3, s4        # tamanho do vetor (nª colunas)
+        li a4, 1
+        jal ra, dot
+        # falta verificar se dá success
+        sw a1, 0(s0)
+        addi s0, s0, 4  # avança um byte no vetor final
+        addi s6, s6, 1  # incrementa o contador do loop
+        j loop_compute_scores
 
 compute_scores_end:
-    lw s7, 32(sp)
+    mv a0, s5
     lw s6, 28(sp)
     lw s5, 24(sp)
     lw s4, 20(sp)
@@ -622,7 +631,7 @@ compute_scores_end:
     lw s1, 8(sp)
     lw s0, 4(sp)
     lw ra, 0(sp)
-    addi sp, sp, 36
+    addi sp, sp, 32
     jr ra
 
 # (out) a0: address of the selected vector (int*)
