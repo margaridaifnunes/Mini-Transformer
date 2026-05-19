@@ -9,10 +9,8 @@ Dúvidas/Questões:
 
  -> na função read_file como podemos substituir o code 41? fechamos o ficheiro? E com o código 63 o que devemos fazer se devolver -1.parse_matrix_buffer é deixar tipo 'buffer esparguete já convertida'
 
- -> que função é esta que está por definir advance_to_next_token ??? dá erro de compilação
-
  -> verificações com blez são necessárias na matrix_multiply? ou como é dito que os ficheiros são bem-formados 
-    não é necessário??
+    não é necessário?? Na matrix_multiply, podemos assumir que há uma que é 4*4??
 
 
 Não esquecer (no fim):
