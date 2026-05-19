@@ -14,7 +14,7 @@ Dúvidas/Questões:
 
  -> fazer função mais geral para linhas e colunas no multiply_matrix
 
-
+-> implementar um stride no dot; flag se tiver de 1 em 1 se tiver 4 salta de 4 em 4;
 
 Não esquecer (no fim):
  - comentar tudo em inglês ou tudo em ptpt
