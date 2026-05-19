@@ -523,7 +523,7 @@ matrix_multiply:
     sw s6 ,24(sp)
     #blez a5, exit_with_error
     #blez a2, exit_with_error
-    #bne a3, a5, exit_with_erro
+    #bne a3, a5, exit_with_error
     sw s5, 28(sp)           # preparar para meter os contador de colunas
     sw s7, 32(sp)           # preparar para meter o contador de leemtnos
     sw s8, 36(sp)
