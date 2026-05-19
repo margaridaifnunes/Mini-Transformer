@@ -505,7 +505,68 @@ build_input_embeddings_matrix:
 # (in)     a5: #rows of the second matrix (int)
 # (in)     a6: #columns of the second matrix (int)
 matrix_multiply:
-    # TODO
+    addi sp sp -32
+    sw ra, 0 (sp)
+    sw s0, 4 (sp)
+    sw s1, 8 (sp)
+    sw s2, 12(sp)
+    sw s3, 16(sp)
+    sw s4, 20(sp)
+    sw s5, 24(sp)  
+    sw s6, 28(sp)
+       
+    # store dos argumentos
+ 
+
+    #blez a5, exit_with_error
+    #blez a2, exit_with_error
+    #bne a3, a5, exit_with_error
+    mv s0, a0
+    mv s1, a1           # apontador para o inicio da 1ª matriz
+    mv s2,a4            # apontador para o inicio da 2ª matriz
+    mv s3,s0            # ponteiro andante da matriz de retorno
+    mv s4, a6    
+    mv s5, a2
+    mv s6, a4           # apontador difinitivo da 2ª matriz
+    
+    loop_matrix:  
+        beqz s5, matrix_mult_end
+        mv a6,s4
+        mv s2,s6
+        loop_column:
+            beqz a6, next_line
+            addi a6,a6,-1
+            j apply_dot
+
+    apply_dot:
+        mv a1,s1
+        mv a2,s2
+        li a3, 4
+        li a4, 4
+        jal ra, dot
+        sw a1, 0(s3)
+        addi s3, s3, 4
+        addi s2, s2, 4
+        j loop_column
+    
+    next_line:
+        addi s1, s1, 16
+        addi s5, s5, -1
+        
+        j loop_matrix
+
+    matrix_mult_end:
+        mv a0, s0
+        lw ra, 0(sp)
+        lw s0 ,4(sp)
+        lw s1, 8(sp)
+        lw s2, 12(sp)
+        lw s3, 16(sp)
+        lw s4, 20(sp)
+        lw s5, 24(sp)
+        lw s6, 28(sp)
+        addi sp, sp, 32
+        jr ra
 
 # (in/out) a0: address of the output scores vector to fill (int*)
 # (in)     a1: address of Q matrix (int*)
@@ -593,9 +654,12 @@ decide_next_token:
 # (in)  a1: address of first vector (int*)
 # (in)  a2: address of second vector (int*)
 # (in)  a3: length of the vectors (int)
+# (in)  a4: tamanho do incremento (int)
 # (out) a0: status code (0 for success, non-zero for error)
 # (out) a1: dot product result (int)
 dot:
+    li t5,4
+    mul a4,a4,t5
     addi sp, sp, -4
     sw ra, 0(sp)                                    # Save return address on the stack
     # Initialize the result and the loop index.
@@ -632,7 +696,7 @@ check_negative_overflow:
     j dot_continue_loop
 dot_continue_loop:
     addi a1, a1, 4                                  # Move to the next element in A
-    addi a2, a2, 4                                  # Move to the next element in B
+    add a2, a2, a4                                 # Move to the next element in B
     addi t1, t1, 1                                  # t1++
     j dot_loop                                      # Repeat the loop
 dot_end_loop:
