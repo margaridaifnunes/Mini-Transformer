@@ -39,17 +39,6 @@
 .equ CONST_CHAR_ZERO 48
 
 .data
-###########################################################################
-# Data section with static memory reservations.
-# Feel free to add more if needed.
-###########################################################################
-VOCABULARY_FILENAME:     .string "C:\Users\halsg\IAC\P2_skeleton\vocab.txt"
-EMBEDDINGS_FILENAME:     .string "C:\Users\halsg\IAC\P2_skeleton\embeddings.txt"
-INPUT_FILENAME:          .string "C:\Users\halsg\IAC\P2_skeleton\input.txt"
-
-W_Q_FILENAME:            .string "C:\Users\halsg\IAC\P2_skeleton\W_Q.txt"
-W_K_FILENAME:            .string "C:\Users\halsg\IAC\P2_skeleton\W_K.txt"
-W_V_FILENAME:            .string "C:\Users\halsg\IAC\P2_skeleton\W_V.txt"
 
 VOCAB_BUFFER:            .zero CONST_BUFFER_SIZE                              # Contents of the vocabulary file
 INPUT_BUFFER:            .zero CONST_BUFFER_SIZE                              # Contents of the input file
@@ -74,7 +63,20 @@ V_MATRIX:                .zero (CONST_MAX_INPUT_TOKENS * CONST_DIMENSION * 4) # 
 # US
 
 ROW_VECTOR:             .zero (CONST_DIMENSION * 4)                           # ROW_VECTOR (dimension X 4 bytes)
-COLUMN_VECTOR:          .zero (CONST_DIMENSION * 4)                           # column_VECTOR (dimension X 4 bytes)       
+COLUMN_VECTOR:          .zero (CONST_DIMENSION * 4)
+
+                           # column_VECTOR (dimension X 4 bytes)       
+###########################################################################
+# Data section with static memory reservations.
+# Feel free to add more if needed.
+###########################################################################
+VOCABULARY_FILENAME:     .string "C:\Users\halsg\IAC\P2_skeleton\vocab.txt"
+EMBEDDINGS_FILENAME:     .string "C:\Users\halsg\IAC\P2_skeleton\embeddings.txt"
+INPUT_FILENAME:          .string "C:\Users\halsg\IAC\P2_skeleton\input.txt"
+
+W_Q_FILENAME:            .string "C:\Users\halsg\IAC\P2_skeleton\W_Q.txt"
+W_K_FILENAME:            .string "C:\Users\halsg\IAC\P2_skeleton\W_K.txt"
+W_V_FILENAME:            .string "C:\Users\halsg\IAC\P2_skeleton\W_V.txt"
 
 
 
@@ -101,9 +103,9 @@ main:
     ###########################################################################
     # Read W_Q matrix
     ###########################################################################
-    la a0, W_Q_FILENAME       # coloca o adress o ficheiro do input
+    la a0, W_Q_FILENAME          # coloca o adress o ficheiro do input
     la a1, MATRIX_BUFFER         # coloca o adress onde vai colocar o buffer do ficheiro
-    li a2, CONST_BUFFER_SIZE    # coloca em a2 o número máximo de bytes a ler
+    li a2, CONST_BUFFER_SIZE     # coloca em a2 o número máximo de bytes a ler
 
     jal ra, read_file
     ###########################################################################
@@ -116,9 +118,9 @@ main:
     ###########################################################################
     # Read W_K matrix
     ###########################################################################
-    la a0, W_K_FILENAME       # coloca o adress o ficheiro do input
+    la a0, W_K_FILENAME          # coloca o adress o ficheiro do input
     la a1, MATRIX_BUFFER         # coloca o adress onde vai colocar o buffer do ficheiro
-    li a2, CONST_BUFFER_SIZE    # coloca em a2 o número máximo de bytes a ler
+    li a2, CONST_BUFFER_SIZE     # coloca em a2 o número máximo de bytes a ler
 
     jal ra, read_file
     ###########################################################################
@@ -132,8 +134,8 @@ main:
     ###########################################################################
     # Read W_V matrix
     ###########################################################################
-    la a0, W_V_FILENAME       # coloca o adress o ficheiro do input
-    la a1, MATRIX_BUFFER         # coloca o adress onde vai colocar o buffer do ficheiro
+    la a0, W_V_FILENAME         # coloca o adress o ficheiro do input
+    la a1, MATRIX_BUFFER        # coloca o adress onde vai colocar o buffer do ficheiro
     li a2, CONST_BUFFER_SIZE    # coloca em a2 o número máximo de bytes a ler
     
     jal ra, read_file
@@ -167,11 +169,9 @@ main:
     # Convert input tokens to indices
     ###########################################################################
     mv a3, s0                   # vai buscar o buffer do vocabulario
-    mv a2, s1                   # vai buscar o buffer dos inputs
+    mv a2, s1                   #vai buscar o buffer dos inputs
     la a0, INPUT_INDICES_VECTOR
    
-    
-
     jal ra, tokens_to_indices
     ###########################################################################
     # Build input embeddings matrix
@@ -181,12 +181,12 @@ main:
     #a3 -> NUMERO DE TOKENS
     mv a2, a0                       # a2 -> penteiro dos inpits (input)
     mv a3, a1                       # a3 -> tamanhodo vetor (numero de tokens)
-    mv s11, a3            # verificarrrrrrrrrrrrrrrrrrrrrr (como assim 11 ??)
-    mv a1, s10                       # a1 -> matriz do vocab preenchinda
+    mv a1, s10                      # a1 -> matriz do vocab preenchinda
     la a0, INPUT_EMBEDDINGS_MATRIX
     
     jal ra, build_input_embeddings_matrix
     mv s5, a0
+    mv s10, a3                      # guardar o nº de tokens para select_vector
     ###########################################################################
     # Build matrix Q
     ###########################################################################
@@ -211,7 +211,6 @@ main:
     li a6, 4
 
     jal ra, matrix_multiply
-
     ###########################################################################
     # Build matrix V
     ###########################################################################
@@ -224,30 +223,35 @@ main:
     li a6, 4
 
     jal ra, matrix_multiply
-
     ###########################################################################
     # Compute scores for the last input token
     ###########################################################################
     la a0, SCORES_VECTOR
     la a1, Q_MATRIX
     la a2, K_MATRIX
-    mv a3, s11
+    mv a3, s10
     li a4, 4
-    addi t0, s11, -1
+    addi t0, s10, -1
     mv a5, t0
 
     jal ra, compute_scores
-
+    debug: #a0
     ###########################################################################
     # Get the highest score index using argmax
     ###########################################################################
-    # TODO
+    la a1, SCORES_VECTOR
+    mv a2, s10        # array lenght = nº de tokens
 
+    jal ra, argmax
     ###########################################################################
     # Select chosen vector in V using the index from argmax
     ###########################################################################
-    # TODO
+    la a1, V_MATRIX     # endereço da matriz V
+    mv a2, s10          # nº de linhas (= nº de tokens)
+    li a3, 4            # nº de colunas
+    mv a4, a1           # índice vindo do argmax
 
+    jal ra, select_vector_in_matrix
     ###########################################################################
     # Pick the next token in the vocabulary with the highest score
     ###########################################################################
@@ -259,46 +263,46 @@ main:
     li a0, 0
     j exit_with_code                                # Exit with code 0
 
-    # FUNCTION READ_FILE:
-
-# Read from a text file into a buffer. 
-# (in)     a0: filename address (char*) 
-# (in/out) a1: destination buffer 
+# Read from a text file into a buffer.
+# (in/out) a0: filename address (char*)
+# (in/out) a1: destination buffer
 # (in)     a2: maximum number of bytes to read
-read_file: 
-addi sp,sp,-16
-sw ra, 12(sp)
-sw a1, 8(sp)
-sw a2, 4(sp)
-
-# Abrir o ficheiro:
-li a1, 0     # flag a zero 
-li a7, 1024  # open
-ecall        # a0 = fd (fd < 0 se houve erro)
-
-# verificar se fd é válido (fd >= 0):
-blt a0, x0, invalid_fd  # fd < 0 (error 41)
-sw a0, 0(sp)            # guardar fd na stack para depois fazer close
-
-# Ler o ficheiro:
-lw a1, 8(sp)  # restaurar o endereço do buffer
-lw a2, 4(sp)  # restaurar o tamanho
-li a7, 63     # ler o ficheiro (a1 = filename adress, a2 = maximum number of bytes to read)
-ecall
-
-# Fechar o ficheiro:
-lw a0, 0(sp)
-li a7, 57
-ecall
-
-# Restaurar a stack:
-lw ra, 12(sp)
-addi sp, sp, 16
-jr ra
-
+# (out)    a7: code -1 for error
+read_file:
+    addi sp,sp,-16
+    sw ra, 12(sp)
+    sw a1, 8(sp)
+    sw a2, 4(sp)
+    
+    # Abrir o ficheiro:
+    li a1, 0     # flag a zero 
+    li a7, 1024  # open
+    ecall        # a0 = fd (fd < 0 se houve erro)
+    
+    # verificar se fd é válido (fd >= 0):
+    blt a0, x0, invalid_fd  # fd < 0 (error 41)
+    sw a0, 0(sp)            # guardar fd na stack para depois fazer close
+    
+    # Ler o ficheiro:
+    lw a1, 8(sp)  # restaurar o endereço do buffer
+    lw a2, 4(sp)  # restaurar o tamanho
+    li a7, 63     # ler o ficheiro (a1 = filename adress, a2 = maximum number of bytes to read)
+    ecall
+    
+    # Fechar o ficheiro:
+    lw a0, 0(sp)
+    li a7, 57
+    ecall
+    
+    # Restaurar a stack:
+    lw ra, 12(sp)
+    addi sp, sp, 16
+    jr ra
+    
 invalid_fd: 
   li a7, 93
   ecall
+
 
 # Assumes the matrix is stored in the buffer as space-separated integers.
 # Assumes columns are separated by 1 space (' '), and rows by 1 newline ('\n').
@@ -307,7 +311,6 @@ invalid_fd:
 # (out)    a1: number of rows in the matrix (int)
 # (in)     a1: address of the buffer containing the matrix data (char*)
 parse_matrix_buffer:
-
     addi sp ,sp -12              # reserva 12 bytes para a stack
     sw ra, 0(sp)
     sw s0, 4(sp)
@@ -380,7 +383,7 @@ parse_matrix_buffer:
 # (in)     a3: address to vocabulary buffer
 tokens_to_indices:
     # a0 -> PONIRO PARA MATRIZ A PREENCHER
-    # a2 -> PONTEIROO PARAAA INPUTTTTT
+    # a2 -> PONTEIROO PARAAA INPUT
     # a3 -> PONTERIO PARA O VOCABULÁRIO
 
     addi sp, sp, -16
@@ -404,7 +407,6 @@ tokens_to_indices:
         li t0, CONST_CHAR_EOF       # codigo do EOF
             beq t1, t0, end_loop_tokens    # se t1 é EOF
 
-
     loop_vocab:
         lb  t5, 0(a3)               # bit do vocab a analizar
         lb  t1, 0(a2)               # bit do input a analizar
@@ -413,7 +415,7 @@ tokens_to_indices:
             beq t5, t0, end_loop_tokens    # se t5 é EOF
 
         loop_letter:
-            bne t1,t5,next_vocab_word #verifica se os bytes saõ iguais
+            bne t1,t5,next_vocab_word #verifica se os bytes são iguais
 
             li t0, CONST_CHAR_NEWLINE   # codigo do Newline
                 beq t1, t0,add_word     # se t1 é '\n'
@@ -436,7 +438,7 @@ tokens_to_indices:
         addi t4, t4, 1  # t4 = t4 + imm
 
         ignore_line:
-            addi a3, a3, 1              # proximo bit (á frente do newline)
+            addi a3, a3, 1              # proximo bit (à frente do newline)
             lb t5, 0(a3)    
             li t0, CONST_CHAR_NEWLINE   # codigo do Newline
             bne t5, t0, ignore_line # verifica se é igual a newline
@@ -444,16 +446,12 @@ tokens_to_indices:
         addi a3, a3,1
         j loop_vocab
 
-
-
     next_input_word: # meter o apontador (a2) na posiçao do proximo bit
         addi a2,a2, 1
         mv t4, x0
         mv s2, a2
         mv a3, s1
         j loop_input
-
-
 
     end_loop_tokens:
         mv a0, s0           # a0 para s0
@@ -464,8 +462,6 @@ tokens_to_indices:
         lw s2, 12(sp)
         addi sp, sp, 16
         jr ra
-
-    
 
 # (in/out) a0: address of the output matrix to fill (int*)
 # (in)     a1: address of the vocabulary embeddings matrix (int*)
@@ -511,8 +507,6 @@ build_input_embeddings_matrix:
     lw s1, 8(sp)
     addi sp, sp, 12
     jr ra
-    
-
 
 # (in/out) a0: address of the output matrix to fill (int*)
 # (in)     a1: address of the first matrix (int*)
@@ -522,126 +516,69 @@ build_input_embeddings_matrix:
 # (in)     a5: #rows of the second matrix (int)
 # (in)     a6: #columns of the second matrix (int)
 matrix_multiply:
-    addi sp sp -44
+    addi sp sp -32
     sw ra, 0 (sp)
     sw s0, 4 (sp)
     sw s1, 8 (sp)
     sw s2, 12(sp)
     sw s3, 16(sp)
     sw s4, 20(sp)
-    sw s6 ,24(sp)
-    sw s5, 28(sp)           # preparar para meter os contador de colunas
-    sw s7, 32(sp)           # preparar para meter o contador de leemtnos
-    sw s8, 36(sp)
-    sw s9, 40(sp)           # guardar o indereço da matriz
+    sw s5, 24(sp)  
+    sw s6, 28(sp)
+       
     # store dos argumentos
-    mv s0, a0
-    mv s1, a1
-    mv s2,a2
-    mv s8, a3
-    mv s9, a4
-    mv s5, a6
-    mv s6, so
-    
-    #mv s5, a6               # indice das colunas
-    #mv s0, a0               
-    #mv s8, a2
-    #mv s2, s8
-    #mv s9, a4
-    #mv s6, a0       #ponteiro definitivo da matriz a preencher
+ 
 
     #blez a5, exit_with_error
     #blez a2, exit_with_error
-    bne a3, a5, exit_with_error
-
+    #bne a3, a5, exit_with_error
+    mv s0, a0
+    mv s1, a1           # apontador para o inicio da 1ª matriz
+    mv s2,a4            # apontador para o inicio da 2ª matriz
+    mv s3,s0            # ponteiro andante da matriz de retorno
+    mv s4, a6    
+    mv s5, a2
+    mv s6, a4           # apontador difinitivo da 2ª matriz
+    
     loop_matrix:  
-        beqz s2, matrix_mult_end    # se não houver mais linhas
-        addi s2, s2, -1             # vai decrementando o contador de linhas
-        mv a1 ,s1                   # mete o a1 como endereço da linha  
-        mv s3, s5          
-        #mv t5, a2
-        mv s4, s9                   #volta ao inicio
-        slli t0, s5, 2
-        sub s4, s4, t0
+        beqz s5, matrix_mult_end
+        mv a6,s4
+        mv s2,s6
         loop_column:
-            mv a1, s1
-            la a2, COLUMN_VECTOR    # inicia o vetor coluna
-            beqz s3, next_line_matrix    # se não houver mais colunas
-            mv s7, s8                # decrementador de elementos da coluna
-            addi s3, s3, -1         # decrementa o contador de colunas
-            slli t0, s5, 2
-            add s4, s4, t0
-            loop_value:
-                beqz s7, apply_dot  # se não houver mais elementos da coluna
-                lw t4, 0(s4)        # dá load do elemento da coluna
-                sw t4, 0(a2)        # dá save desse valor no vetor coluna
-                addi a2,a2, 4       # incremnte o endereço do vetor colunas
-                slli t0, t0,4
-                add s4, s4, t0
-                addi s7, s7, -1     # decrementa o contador
-                j loop_value        # volta a fazer para o resto dos valores
-        next_line_matrix:
-            slli t0, s8, 2
-            addi s1, s1 ,t0             # mete o s1 na próxima linha
-            j loop_matrix
+            beqz a6, next_line
+            addi a6,a6,-1
+            j apply_dot
 
-        apply_dot:
-            slli t1, t5, 2  
-            mul t1, t1,s8
-            addi s4, s4, -1
-            la a2, COLUMN_VECTOR
-            mv a1, s1
-            li a3, s8                # inicia o tamnho do vetor a analizar
-#jal ra, print_matrices
-            jal ra, dot             # chama o procedimento "dot"
-            sw a1, 0(s0)            # insere o resultado na matriz final
-            addi s0, s0, 4          # incrementa o elemento da matriz
-            addi s4, s4, 4          # incrementa a coluna a analizar
-            j loop_column           # volta a fazer para a proxima coluna
-  
-  print_matrices:
-  #adicionar something
-      sw s9, 52(sp)
-      sw s8, 56(sp)
-      sw a1, 48(sp)
-      sw a2, 44(sp)
-      
-      mv s9, ra
-      mv s8, a0
-      mv a0,a1
-      li a1, 1
-      li a2, 4
-      
-      jal ra, print_matrix
-      lw a0,44(sp)
-      jal ra,  print_matrix
-      
-      mv a0,s8
-      mv ra, s9
-      lw a1, 48(sp)
-      lw a2, 44(sp)
-      lw s9, 52(sp)
-      lw s8, 56(sp)
-      jr ra
+    apply_dot:
+        mv a1,s1
+        mv a2,s2
+        li a3, 4
+        li a4, 4
+        jal ra, dot
+        sw a1, 0(s3)
+        addi s3, s3, 4
+        addi s2, s2, 4
+        j loop_column
+    
+    next_line:
+        addi s1, s1, 16
+        addi s5, s5, -1
+        
+        j loop_matrix
 
     matrix_mult_end:
-        #mv a0, s6
-        #li a1, 4
-        #li a2, 4
-        jal ra, print_matrix
+        mv a0, s0
         lw ra, 0(sp)
         lw s0 ,4(sp)
         lw s1, 8(sp)
         lw s2, 12(sp)
         lw s3, 16(sp)
         lw s4, 20(sp)
-        lw s6, 24(sp)
-        lw s5, 28(sp)
-        lw s7, 32(sp)
-        lw s8, 36(sp)
-        lw s9, 40(sp)
-        addi sp, sp, 44
+        lw s5, 24(sp)
+        lw s6, 28(sp)
+        addi sp, sp, 32
         jr ra
+
 # (in/out) a0: address of the output scores vector to fill (int*)
 # (in)     a1: address of Q matrix (int*)
 # (in)     a2: address of K matrix (int*)
@@ -649,7 +586,7 @@ matrix_multiply:
 # (in)     a4: #columns of Q and K (int)
 # (in)     a5: target token index for which we want to compute the score (int)
 compute_scores:
-    addi sp, sp, -36
+    addi sp, sp, -32
     sw ra, 0(sp)
     sw s0, 4(sp)        # para o offset da 
     sw s1, 8(sp)        # ponteiro para o Q
@@ -658,36 +595,47 @@ compute_scores:
     sw s4, 20(sp)
     sw s5, 24(sp)
     sw s6, 28(sp)
-    sw s7, 32(sp)
 
-    mv s1, a1
+    #beq a3,a4, erro
+    
+    mv s0, a0           # ponteiro de retorno
+    mv s1, a1           # ponteiro de Q
     mv s2, a2           # ponteiro de K
-    mv s3, a0
-    mv s6, a3           # para guardar o número de colunas
-    mv s7, a4           # para guardar o número de colunas
-    li s4, 0            # contador para os loops das multiplicações
+    mv s3, a3           # ponteiro de scores
+    mv s4, a4
+    mv s5, a0           # ponteiro FIXO do scores_vector
 
-    # para somar o offset ao ponteiro de Q
-    slli s0, s7, 2      # guarda em s0 a "distância" de uma coluna
-    mv s5, s0           # offset para K
-    mul s0, s0, a5      # guarda em s0 o offset 
-    add s1, s1, s0          # soma o offset ao ponteiro de Q que usamos
+            #a5 É O N-1 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!      
+    
 
-loop_compute_scores:
-    beq s4, s6, compute_scores_end
-    mv a1, s1
-    mv a2, s2
-    mv a3, s7
-    jal ra, dot
-    # falta verificar se dá success
-    sw a1, 0(s3)
-    addi s3, s3, 4  # avança um byte
-    add s2, s2, s5
-    addi s4, s4, 1
-    j loop_compute_scores
+    # Clacular Q[target] adress = Q[base] + Target * columns * 4 bytes
+    mul s4, a5, s4      # Target X columns
+    slli s4, s4, 2      # Traget X columns * 4 bytes
+    add s1, s4, s1      # soma o offset ao ponteiro de Q que usamos  
+
+    
+
+    # score[j] = dot(Q[n-1], K[j])
+    li s6,0
+    loop_compute_scores:
+        bge s6, s4, compute_scores_end
+        # k[j]:
+            slli t0,s6, 2       # incremento para o ponteiro de K
+            add t1, s2, t0      # ponteiro de K a multiplicar
+    
+        mv a1, s1
+        mv a2, t1
+        mv a3, s4
+        mv a4, s4
+        jal ra, dot
+        # falta verificar se dá success
+        sw a1, 0(s0)
+        addi s0, s0, 4  # avança um byte no vetor final
+        addi s6, s6, 1  # incrementa o contador do loop
+        j loop_compute_scores
 
 compute_scores_end:
-    lw s7, 32(sp)
+    mv a0, s5
     lw s6, 28(sp)
     lw s5, 24(sp)
     lw s4, 20(sp)
@@ -696,7 +644,7 @@ compute_scores_end:
     lw s1, 8(sp)
     lw s0, 4(sp)
     lw ra, 0(sp)
-    addi sp, sp, 36
+    addi sp, sp, 32
     jr ra
 
 # (out) a0: address of the selected vector (int*)
@@ -711,7 +659,8 @@ select_vector_in_matrix:
     add a0, a1, t0
 
 invalid_row:
-    
+  li a7, 93
+  ecall
 
 # (out) a0: index of the predicted token in the vocabulary (int)
 # (in)  a0: address of target vector (int*)
@@ -727,9 +676,12 @@ decide_next_token:
 # (in)  a1: address of first vector (int*)
 # (in)  a2: address of second vector (int*)
 # (in)  a3: length of the vectors (int)
+# (in)  a4: tamanho do incremento (int)
 # (out) a0: status code (0 for success, non-zero for error)
 # (out) a1: dot product result (int)
 dot:
+    li t5,4
+    mul a4,a4,t5
     addi sp, sp, -4
     sw ra, 0(sp)                                    # Save return address on the stack
     # Initialize the result and the loop index.
@@ -766,7 +718,7 @@ check_negative_overflow:
     j dot_continue_loop
 dot_continue_loop:
     addi a1, a1, 4                                  # Move to the next element in A
-    addi a2, a2, 4                                  # Move to the next element in B
+    add a2, a2, a4                                 # Move to the next element in B
     addi t1, t1, 1                                  # t1++
     j dot_loop                                      # Repeat the loop
 dot_end_loop:
@@ -994,35 +946,24 @@ print_vector_done:
     addi sp, sp, 8
     ret
 
-# (in) a0: index of the predicted token in the vocabulary (int)
-# (in) a1: address of vocabulary buffer (char*)
+# (in) a0: address of the predicted token (char*)
 print_predicted_token:
-    addi sp, sp, -12
+    addi sp, sp, -8
     sw ra, 0(sp)
     sw s0, 4(sp)
-    sw s1, 8(sp)
-    mv s0, a0                                       # s0 = countdown to target index
-    mv s1, a1                                       # s1 = current position in vocab buffer
+    mv s0, a0
     la a0, PRINT_HEADER_NEXT_TOKEN
     jal println
-print_predicted_token_skip:
-    beq s0, zero, print_predicted_token_read
-    mv a0, s1                                       # a0 = current position in vocab buffer
-    #jal advance_to_next_token                       # a0 = next token start
-    mv s1, a0                                       # update current position
-    addi s0, s0, -1
-    j print_predicted_token_skip
-print_predicted_token_read:
-    # s1 = start of target token, print it char by char until newline or null
+    # s0 = start of target token, print it char by char until newline or null
 print_predicted_token_char:
-    lb t0, 0(s1)
+    lb t0, 0(s0)
     beq t0, zero, print_predicted_token_nl          # null terminator
     li t1, CONST_CHAR_NEWLINE
     beq t0, t1, print_predicted_token_nl            # newline terminator
     mv a0, t0
     li a7, CONST_SYSCALL_PRINT_CHAR
     ecall
-    addi s1, s1, 1
+    addi s0, s0, 1
     j print_predicted_token_char
 print_predicted_token_nl:
     li a0, CONST_CHAR_NEWLINE
@@ -1030,6 +971,5 @@ print_predicted_token_nl:
     ecall
     lw ra, 0(sp)
     lw s0, 4(sp)
-    lw s1, 8(sp)
-    addi sp, sp, 12
+    addi sp, sp, 8
     ret
