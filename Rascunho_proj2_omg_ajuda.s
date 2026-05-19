@@ -62,7 +62,7 @@ V_MATRIX:                .zero (CONST_MAX_INPUT_TOKENS * CONST_DIMENSION * 4) # 
 
 # US
 
-ROW_VECTOR:             .zero (CONST_DIMENSION * 4)                           # ROW_VECTOR (dimension X 4 bytes)
+DECIDE_VECTOR:          .zero (CONST_MAX_INPUT_TOKENS * 4)                    # DECIDE_VECTOR (CONST_MAX_INPUT_TOKENS X 4 bytes)
 COLUMN_VECTOR:          .zero (CONST_DIMENSION * 4)
 
                            # column_VECTOR (dimension X 4 bytes)       
@@ -163,7 +163,7 @@ main:
     la a1, MATRIX_BUFFER
     
     jal ra, parse_matrix_buffer
-    mv s10, a0                   # salva o endereço da matriz    
+    mv s11, a0                   # salva o endereço da matriz    
     mv s4, a1               
     ###########################################################################
     # Convert input tokens to indices
@@ -181,7 +181,7 @@ main:
     #a3 -> NUMERO DE TOKENS
     mv a2, a0                       # a2 -> penteiro dos inpits (input)
     mv a3, a1                       # a3 -> tamanhodo vetor (numero de tokens)
-    mv a1, s10                      # a1 -> matriz do vocab preenchinda
+    mv a1, s11                      # a1 -> matriz do vocab preenchinda
     la a0, INPUT_EMBEDDINGS_MATRIX
     
     jal ra, build_input_embeddings_matrix
@@ -246,17 +246,35 @@ main:
     ###########################################################################
     # Select chosen vector in V using the index from argmax
     ###########################################################################
+    mv a4, a1           # índice vindo do argmax
     la a1, V_MATRIX     # endereço da matriz V
     mv a2, s10          # nº de linhas (= nº de tokens)
     li a3, 4            # nº de colunas
-    mv a4, a1           # índice vindo do argmax
+    
 
     jal ra, select_vector_in_matrix
     ###########################################################################
     # Pick the next token in the vocabulary with the highest score
     ###########################################################################
-    # TODO
+    mv a1, s11
+    mv a2, s4
+    jal ra, decide_next_token
 
+    mv t1, a0
+    la t0, VOCAB_BUFFER
+
+    loop_finding_word:
+        beqz t1, word_found
+        lb t2, 0(t0)
+        addi t0, t0, 1
+        li t3, CONST_CHAR_NEWLINE
+        bne t2, t3, loop_finding_word
+        addi t1, t1, -1
+        j loop_finding_word
+
+    word_found:
+        mv a0, t0
+        jal ra, print_predicted_token
     ###########################################################################
     # Terminate program successfully
     ###########################################################################
@@ -609,18 +627,18 @@ compute_scores:
     
 
     # Clacular Q[target] adress = Q[base] + Target * columns * 4 bytes
-    mul s4, a5, s4      # Target X columns
-    slli s4, s4, 2      # Traget X columns * 4 bytes
-    add s1, s4, s1      # soma o offset ao ponteiro de Q que usamos  
+    mul t0, a5, s4      # Target X columns
+    slli t0, t0, 2      # Traget X columns * 4 bytes
+    add s1, t0, s1      # soma o offset ao ponteiro de Q que usamos  
 
     
 
     # score[j] = dot(Q[n-1], K[j])
-    li s6,0
+    li s6,0                             #s6 -> j
     loop_compute_scores:
-        bge s6, s4, compute_scores_end
+        bge s6, s3, compute_scores_end
         # k[j]:
-            slli t0,s6, 2       # incremento para o ponteiro de K
+            slli t0, s6, 2       # incremento para o ponteiro de K
             add t1, s2, t0      # ponteiro de K a multiplicar
     
         mv a1, s1
@@ -657,6 +675,7 @@ select_vector_in_matrix:
     mul t0, a4, a3
     slli t0, t0, 2
     add a0, a1, t0
+    jr ra
 
 invalid_row:
   li a7, 93
@@ -667,7 +686,62 @@ invalid_row:
 # (in)  a1: vocabulary embeddings address (int*)
 # (in)  a2: number of tokens in vocabulary (int)
 decide_next_token:
-    # TODO
+    addi sp, sp, -24
+    sw ra, 0(sp)
+    sw s0, 4(sp)
+    sw s1, 8(sp)
+    sw s2, 12(sp)
+    sw s3, 16(sp)
+    sw s4, 20(sp)
+
+
+    mv s0, a0   # ponteiro para o vetor
+    mv s1, a1   # ponteiro para os embedings do vocabulário
+    mv s2, a2   # nº de tokens no vocabulário
+    
+    la s4, DECIDE_VECTOR
+    li t0, 0
+    li t1, 0
+    li s3, 0    # contador do indice do vocabulário
+    loop_embeding:
+        beq s3,s2, decide_end
+        mv a1, s0
+        mv a2, s1
+        li a3, 4
+        li a4, 1
+        jal ra, dot
+        #bnez a0, salta
+        slli t0, s3, 2 
+        add t0, s4, t0
+        sw a1, 0(t0)
+        addi s1, s1, 16
+        addi s3, s3, 1
+        j loop_embeding
+
+
+    decide_end:
+        mv a1, s4
+        mv a2, s2
+        jal ra, argmax
+        #bnez a0, salta
+        mv a0, a1
+        lw ra, 0(sp)
+        lw s0, 4(sp)
+        lw s1, 8(sp)
+        lw s2, 12(sp)
+        lw s3, 16(sp)
+        lw s4, 20(sp)
+        addi sp, sp, 24
+        jr ra
+        
+
+
+
+
+
+
+
+
 
 #############################################################################################################
 # Dot product and argmax helper functions.
