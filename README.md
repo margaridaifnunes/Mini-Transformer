@@ -6,6 +6,6 @@ Project for Introduction to Computer Architecture
 2nd Project -> projeto2.s
 
 Dúvidas/Questões:
-
+ ->  USAR SOMENTE O FICHEIRO NEW_SKELETON;
 Não esquecer (no fim):
  - comentar tudo em inglês ou tudo em ptpt
