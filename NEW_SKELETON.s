@@ -243,9 +243,10 @@ main:
     j exit_with_code                                # Exit with code 0
 
 # Read from a text file into a buffer.
-# (in)     a0: filename address (char*)
+# (in/out) a0: filename address (char*)
 # (in/out) a1: destination buffer
 # (in)     a2: maximum number of bytes to read
+# (out)    a7: code -1 for error
 read_file:
     addi sp,sp,-16
     sw ra, 12(sp)
@@ -511,7 +512,14 @@ compute_scores:
 # (in)  a3: #cols (int)
 # (in)  a4: target row
 select_vector_in_matrix:
-    # TODO
+    bgt a4, a2, invalid_row
+    mul t0, a4, a3
+    slli t0, t0, 2
+    add a0, a1, t0
+
+invalid_row:
+  li a7, 93
+  ecall
 
 # (out) a0: index of the predicted token in the vocabulary (int)
 # (in)  a0: address of target vector (int*)
