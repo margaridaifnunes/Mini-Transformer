@@ -181,12 +181,12 @@ main:
     #a3 -> NUMERO DE TOKENS
     mv a2, a0                       # a2 -> penteiro dos inpits (input)
     mv a3, a1                       # a3 -> tamanhodo vetor (numero de tokens)
+    mv s11, a3            # verificarrrrrrrrrrrrrrrrrrrrrr (como assim 11 ??)
     mv a1, s10                       # a1 -> matriz do vocab preenchinda
     la a0, INPUT_EMBEDDINGS_MATRIX
     
     jal ra, build_input_embeddings_matrix
     mv s5, a0
-    mv s11, a3            # verificarrrrrrrrrrrrrrrrrrrrrr (como assim 11 ??)
     ###########################################################################
     # Build matrix Q
     ###########################################################################
