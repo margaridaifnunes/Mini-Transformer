@@ -12,6 +12,9 @@ Dúvidas/Questões:
  -> verificações com blez são necessárias na matrix_multiply? ou como é dito que os ficheiros são bem-formados 
     não é necessário?? Na matrix_multiply, podemos assumir que há uma que é 4*4??
 
+ -> fazer função mais geral para linhas e colunas no multiply_matrix
+
+
 
 Não esquecer (no fim):
  - comentar tudo em inglês ou tudo em ptpt
