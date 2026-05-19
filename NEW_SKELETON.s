@@ -213,7 +213,6 @@ main:
     li a6, 4
 
     jal ra, matrix_multiply
-
     ###########################################################################
     # Compute scores for the last input token
     ###########################################################################
@@ -226,7 +225,6 @@ main:
     mv a5, t0
 
     jal ra, compute_scores
-    
     ###########################################################################
     # Get the highest score index using argmax
     ###########################################################################
@@ -237,8 +235,12 @@ main:
     ###########################################################################
     # Select chosen vector in V using the index from argmax
     ###########################################################################
-    # TODO
+    la a1, V_MATRIX     # endereço da matriz V
+    mv a2, s10          # nº de linhas (= nº de tokens)
+    li a3, 4            # nº de colunas
+    mv a4, a1           # índice vindo do argmax
 
+    jal ra, select_vector_in_matrix
     ###########################################################################
     # Pick the next token in the vocabulary with the highest score
     ###########################################################################
