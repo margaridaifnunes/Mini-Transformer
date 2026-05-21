@@ -1,3 +1,11 @@
+VOCABULARY_FILENAME:     .string "vocab.txt"
+EMBEDDINGS_FILENAME:     .string "embeddings.txt"
+INPUT_FILENAME:          .string "input.txt"
+
+W_Q_FILENAME:            .string "W_Q.txt"
+W_K_FILENAME:            .string "W_K.txt"
+W_V_FILENAME:            .string "W_V.txt"
+
 # (in/out) a0: address of the output scores vector to fill (int*)
 # (in)     a1: address of Q matrix (int*)
 # (in)     a2: address of K matrix (int*)
