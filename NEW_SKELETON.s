@@ -233,7 +233,6 @@ main:
     mv a5, t0
 
     jal ra, compute_scores
-    debug: #a0
     ###########################################################################
     # Get the highest score index using argmax
     ###########################################################################
@@ -249,7 +248,6 @@ main:
     mv a2, s10          # nº de linhas (= nº de tokens)
     li a3, 4            # nº de colunas
     
-
     jal ra, select_vector_in_matrix
     ###########################################################################
     # Pick the next token in the vocabulary with the highest score
@@ -350,9 +348,8 @@ parse_matrix_buffer:
             
         li t0, CONST_CHAR_HYPHEN    # codigo do '-'
             beq t1, t0, negative    # se t1 e '-'
-        #conversão
-
-        
+            
+        # Conversão:        
         li t0, CONST_CHAR_ZERO
         sub t1,t1, t0                #converter para ASCII ( t1 - 48 ('0'))
         
