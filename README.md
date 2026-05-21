@@ -15,9 +15,14 @@ Não esquecer (no fim):
 Path's do Henrique:
 
 VOCABULARY_FILENAME:     .string "C:\Users\halsg\IAC\P2_skeleton\vocab.txt"
+
 EMBEDDINGS_FILENAME:     .string "C:\Users\halsg\IAC\P2_skeleton\embeddings.txt"
+
 INPUT_FILENAME:          .string "C:\Users\halsg\IAC\P2_skeleton\input.txt"
 
+
 W_Q_FILENAME:            .string "C:\Users\halsg\IAC\P2_skeleton\W_Q.txt"
+
 W_K_FILENAME:            .string "C:\Users\halsg\IAC\P2_skeleton\W_K.txt"
+
 W_V_FILENAME:            .string "C:\Users\halsg\IAC\P2_skeleton\W_V.txt"
