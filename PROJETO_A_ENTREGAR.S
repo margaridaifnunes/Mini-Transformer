@@ -201,107 +201,109 @@ main:
     li a2, 4
     jal ra, print_matrix
     ###########################################################################
-    # Build matrix Q
+    # Build matrix K
     ###########################################################################
     la a0, K_MATRIX        # coloca em a0 o endereço de K_MATRIX
     mv a1, s5              # coloca em a1 a matriz dos embeddings preenchida
-    mv a2, s4
-    li a3, 4
-    mv a4, s2
-    li a5, 4
-    li a6, 4
+    mv a2, s4              # coloca em a2 o nº de linhas da matriz dos embeddings = nº de tokens
+    li a3, 4               # coloca em a3 o nº de colunas dos embeddings = 4
+    mv a4, s2              # coloca em a4 o endereço da matriz W_K preenchida
+    li a5, 4               # coloca em a5 o nº de linhas de W_K = 4
+    li a6, 4               # coloca em a6 o nº de colunas de W_K = 4
+
+    jal ra, matrix_multiply    #  K = E * W_K
+
     DEEBUG:
-    jal ra, matrix_multiply
     li a1, 3
     li a2, 4
     jal ra, print_matrix
- 
     ###########################################################################
-    # Build matrix K
+    # Build matrix Q
     ###########################################################################
-    la a0, Q_MATRIX
-    mv a1, s5
-    mv a2, s4
-    li a3, 4
-    mv a4, s8
-    mv a5, s7
-    li a6, 4
+    la a0, Q_MATRIX        # coloca em a0 o endereço de Q_MATRIX
+    mv a1, s5              # coloca em a1 a matriz dos embeddings preenchida
+    mv a2, s4              # coloca em a2 o nº de linhas da matriz dos embeddings = nº de tokens
+    li a3, 4               # coloca em a3 o nº de colunas dos embeddings = 4
+    mv a4, s8              # coloca em a4 o endereço da matriz W_Q preenchida, guardado em s8
+    mv a5, s7              # coloca em a5 o nº de linhas de W_Q, guardado em s7
+    li a6, 4               # coloca em a6 o nº de colunas de W_Q = 4
 
-    jal ra, matrix_multiply
+    jal ra, matrix_multiply    #  Q = E * W_Q
+
     li a1, 3
     li a2, 4
     jal ra, print_matrix
     dedebug:
-    
     ###########################################################################
     # Build matrix V
     ###########################################################################
-    la a0, V_MATRIX
-    mv a1, s5
-    mv a2, s4
-    li a3, 4
-    mv a4, s6
-    mv a5, s9
-    li a6, 4
+    la a0, V_MATRIX        # coloca em a0 o endereço de V_MATRIX
+    mv a1, s5              # coloca em a1 a matriz dos embeddings preenchida
+    mv a2, s4              # coloca em a2 o nº de linhas da matriz dos embeddings = nº de token
+    li a3, 4               # coloca em a3 o nº de colunas dos embeddings = 4
+    mv a4, s6              # coloca em a4 o endereço da matriz W_V preenchida, guardado em s6
+    mv a5, s9              # coloca em a5 o nº de linhas de W_V, guardado em s9
+    li a6, 4               # coloca em a6 o nº de colunas de W_V = 4
 
-    jal ra, matrix_multiply
+    jal ra, matrix_multiply        # V = E * W_V
+
     li a1, 3
     li a2, 4
     jal ra, print_matrix
     ###########################################################################
     # Compute scores for the last input token
     ###########################################################################
-    la a0, SCORES_VECTOR
-    la a1, Q_MATRIX
-    la a2, K_MATRIX
-    lw a3, INPUT_TOTAL_TOKENS
-    li a4, 4
-    addi t0, a3, -1
-    mv a5, t0
+    la a0, SCORES_VECTOR            # coloca em ao o endereço do vetor de scores a preencher
+    la a1, Q_MATRIX                 # coloca em a1 o endereço da matriz Q
+    la a2, K_MATRIX                 # coloca em a2 o endereço da matriz K
+    lw a3, INPUT_TOTAL_TOKENS       # coloca em a3 o nº de linhas de Q e K (= nº de tokens)
+    li a4, 4                        # coloca em a4 o nº de colunas de Q e K = 4
+    addi t0, a3, -1                 # desincrementa 1 ao a3 (índice começa em 0)
+    mv a5, t0                       # coloca em a5  o índice-alvo
 
     jal ra, compute_scores
+
     jal ra, print_scores
     debug:
     
     ###########################################################################
     # Get the highest score index using argmax
     ###########################################################################
-    la a1, SCORES_VECTOR
-    lw a2, INPUT_TOTAL_TOKENS        # array lenght = nº de tokens
+    la a1, SCORES_VECTOR             # coloca em a1 o endereço do vetor de scores
+    lw a2, INPUT_TOTAL_TOKENS        # guarda em a2 o tamanho do vetor (= nº de tokens)
 
     jal ra, argmax 
     ###########################################################################
     # Select chosen vector in V using the index from argmax
     ###########################################################################
-    mv a4, a1           # índice vindo do argmax
-    la a1, V_MATRIX     # endereço da matriz V
-    lw a2, INPUT_TOTAL_TOKENS  # nº de linhas do vocabulário (= nº de tokens)
-    li a3, 4            # nº de colunas
+    mv a4, a1           # coloca em a4 o índice do maior elem do vetor de scores (argmax)
+    la a1, V_MATRIX     # coloca me a1 o endereço da matriz V
+    lw a2, INPUT_TOTAL_TOKENS  # guarda em a2 o nº de linhas do vocab (= nº de tokens)
+    li a3, 4            # coloca em a3 o nº de colunas = 4
     
-
     jal ra, select_vector_in_matrix
-    
     ###########################################################################
     # Pick the next token in the vocabulary with the highest score
     ###########################################################################
-    mv a1, s11
-    lw a2, VOCAB_TOTAL_TOKENS
+    mv a1, s11                    # coloca em a1 o endereço dos embeddings do vocab
+    lw a2, VOCAB_TOTAL_TOKENS     # coloca em a2 o nº de tokens do vocab
+
     jal ra, decide_next_token
 
-    mv t1, a0
-    la t0, VOCAB_BUFFER
+    mv t1, a0                     # coloca em t1 o índice do tokens previsto no vocab
+    la t0, VOCAB_BUFFER           # coloca em to o endereço do buffer do vocab
 
     loop_finding_word:
-        beqz t1, word_found
-        lb t2, 0(t0)
-        addi t0, t0, 1
-        li t3, CONST_CHAR_NEWLINE
-        bne t2, t3, loop_finding_word
-        addi t1, t1, -1
-        j loop_finding_word
+        beqz t1, word_found       # se t1 = 0 -> encontramos a palavra certa 
+        lb t2, 0(t0)              # carrega o byte atual da buffer para t2
+        addi t0, t0, 1            # avança ponteiro(t0) para o próximo byte
+        li t3, CONST_CHAR_NEWLINE        # coloca t3 = '\n'
+        bne t2, t3, loop_finding_word    # se byte atual != '\n' ainda estamos na mesma palavra: continua loop
+        addi t1, t1, -1                  # atual = '\n'; contador decrementa 1
+        j loop_finding_word        # volta ao início para procurar a próxima palavra
 
     word_found:
-        mv a0, t0
+        mv a0, t0                # coloca em a0 o endereço do token previsto (início da palavra)
         jal ra, print_predicted_token
     ###########################################################################
     # Terminate program successfully
