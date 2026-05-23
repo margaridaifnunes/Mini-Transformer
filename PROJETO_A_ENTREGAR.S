@@ -111,11 +111,7 @@ main:
     la a0, W_K_MATRIX            # coloca em a0 o endereço da matriz W_K
 
     jal ra, parse_matrix_buffer
-    mv s2, a0                    # guarda em s2 o endereço da matriz preenchida
-    dededebug:
-    li a1, 4
-    li a2, 4
-    jal ra, print_matrix    
+    mv s2, a0                    # guarda em s2 o endereço da matriz preenchida   
     ###########################################################################
     # Read W_Q matrix
     ###########################################################################
@@ -132,9 +128,6 @@ main:
     jal ra, parse_matrix_buffer
     mv s7, a1                    # guarda em s7 o nº de linhas
     mv s8, a0                    # guarda em s8 o endereço da matriz preenchida
-    li a1, 4
-    li a2, 4
-    jal ra, print_matrix
     ###########################################################################
     # Read W_V matrix
     ###########################################################################
@@ -151,8 +144,6 @@ main:
     jal ra, parse_matrix_buffer
     mv s6, a0                    # guarda em s6 o endereço da matriz preenchida
     mv s9, a1                    # guarda em s9 o nº de linhas
-    li a2, 4
-    jal ra, print_matrix
      ###########################################################################
     # Read embeddings matrix
     ###########################################################################
@@ -197,9 +188,7 @@ main:
     mv s5, a0                         # guarda em s5 o endereço da matriz preenchida
     la t2, INPUT_TOTAL_TOKENS         # coloca em t2 o nº total de tokens do input
     sw a3, 0(t2)                      # guardar em s3 o nº de tokens para select_vector
-    li a1, 3
-    li a2, 4
-    jal ra, print_matrix
+
     ###########################################################################
     # Build matrix K
     ###########################################################################
@@ -213,10 +202,6 @@ main:
 
     jal ra, matrix_multiply    #  K = E * W_K
 
-    DEEBUG:
-    li a1, 3
-    li a2, 4
-    jal ra, print_matrix
     ###########################################################################
     # Build matrix Q
     ###########################################################################
@@ -229,11 +214,6 @@ main:
     li a6, 4               # coloca em a6 o nº de colunas de W_Q = 4
 
     jal ra, matrix_multiply    #  Q = E * W_Q
-
-    li a1, 3
-    li a2, 4
-    jal ra, print_matrix
-    dedebug:
     ###########################################################################
     # Build matrix V
     ###########################################################################
@@ -246,10 +226,6 @@ main:
     li a6, 4               # coloca em a6 o nº de colunas de W_V = 4
 
     jal ra, matrix_multiply        # V = E * W_V
-
-    li a1, 3
-    li a2, 4
-    jal ra, print_matrix
     ###########################################################################
     # Compute scores for the last input token
     ###########################################################################
@@ -261,11 +237,7 @@ main:
     addi t0, a3, -1                 # decrementa 1 ao a3 (índice começa em 0)
     mv a5, t0                       # coloca em a5  o índice-alvo
 
-    jal ra, compute_scores
-
-    jal ra, print_scores
-    debug:
-    
+    jal ra, compute_scores    
     ###########################################################################
     # Get the highest score index using argmax
     ###########################################################################
