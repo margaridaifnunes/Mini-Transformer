@@ -321,18 +321,18 @@ main:
 # (out)    a7: code -1 for error
 # ===========================================================================
 read_file:
-    addi sp,sp,-16
+    addi sp,sp,-16    # reserva 16 bytes na stack
     sw ra, 12(sp)
     sw a1, 8(sp)
     sw a2, 4(sp)
     
     # Abrir o ficheiro:
-    li a1, 0     # flag a zero 
-    li a7, 1024  # open
+    li a1, 0     # inicializar flag a zero 
+    li a7, 1024  # abrir o ficheiro
     ecall        # a0 = fd (fd < 0 se houve erro)
     
     # verificar se fd é válido (fd >= 0):
-    blt a0, x0, invalid_fd  # fd < 0 (error 41)
+    blt a0, x0, invalid_fd  # fd < 0
     sw a0, 0(sp)            # guardar fd na stack para depois fazer close
     
     # Ler o ficheiro:
@@ -365,68 +365,64 @@ invalid_fd:
 # (in)     a1: address of the buffer containing the matrix data (char*)
 # ===========================================================================
 parse_matrix_buffer:
-    addi sp ,sp -12              # reserva 12 bytes para a stack
+    addi sp ,sp -12        # reserva 12 bytes para a stack
     sw ra, 0(sp)
     sw s0, 4(sp)
     sw s1, 8(sp)
-    mv s0, a0
-    li t2, 0
-    li t3 ,1                    # t3 é o sinal do numero
-    li t5, 10
-    li s1, 0
+    mv s0, a0              # guarda em s0 o endereço da matriz a preencher
+    li t2, 0               # t2 é o contador de linhas
+    li t3 ,1               # t3 é o sinal do número
+    li t5, 10              # t5 serve para ajustar dezenas, centenas,...
+    li s1, 0               # s1 é o nº atual a analisar
 
     loop_byte:
-        lb t1, 0(a1)            # t1 = byte a anilzar 
-        li t0,CONST_CHAR_SPACE      # codigo do space
-            beq t1, t0, space   # se t1 é ' '
+        lb t1, 0(a1)                # t1 = byte a analisar 
+        li t0,CONST_CHAR_SPACE      # t0 = ' ' (espaço)
+            beq t1, t0, space       # se t1 = ' ' -> salta para space
 
-        li t0, CONST_CHAR_NEWLINE   # codigo do Newline
-            beq t1, t0,new_row     # se t1 é '\n'
+        li t0, CONST_CHAR_NEWLINE   # t0 = '\n' (newline)
+            beq t1, t0,new_row      # se t1 = '\n' -> salta para new_row
 
-        li t0, CONST_CHAR_EOF       # codigo do EOF
-            beq t1, t0, loop_end    # se t1 é EOF
+        li t0, CONST_CHAR_EOF       # t0 = EOF
+            beq t1, t0, loop_end    # se t1 = EOF -> salta para loop_end (chegou ao fim)
             
-        li t0, CONST_CHAR_HYPHEN    # codigo do '-'
-            beq t1, t0, negative    # se t1 e '-'
-        #conversão
+        li t0, CONST_CHAR_HYPHEN    # t0 = '-'
+            beq t1, t0, negative    # se t1 = '-' -> salta para negative para preparar o número que se segue
 
-        
-        li t0, CONST_CHAR_ZERO
-        sub t1,t1, t0                #converter para ASCII ( t1 - 48 ('0'))
-        
-        mul s1, s1, t5               # multiplicar por 10 (X t5)
-        add s1,s1,t1                 # adicionar o dígito atrás do número
-        j next_digit                 #vai para o proximo digito
+        # Conversão para ASCII:
+        li t0, CONST_CHAR_ZERO      # t = '0'
+        sub t1,t1, t0               # t1 = t1 - '0'
+
+        # Tratamento do número: num_final = num atual*10 + novo_algarismo
+        mul s1, s1, t5               # num atual*10 
+        add s1,s1,t1                 # (num atual*10) + novo_algarismo
+        j next_digit                 # próximo digito
     
-    
-    space:
-        mul s1, s1 ,t3              # + - s1
-        mul t3,t3,t3                # t3 ->1 (independentemente do sinal)                 
-        sw s1, 0(a0)                #guarda o s1
-        li s1, 0                    # mete o s1 a 0
-        addi a0, a0, 4              # aumenta o endereço do
+    space:        # ao encontrar um espaço, vai ajustar o sinal do número que acabou
+        mul s1, s1 ,t3              # t3 = 1 ou t3 = -1; multiplica pelo número_final
+        mul t3,t3,t3                # repor t3 = 1 (independentemente do sinal antigo)                 
+        sw s1, 0(a0)                # guarda o s1
+        li s1, 0                    # coloca o s1 a 0 (novo número)
+        addi a0, a0, 4              # aumenta o endereço da matriz
         j next_digit
 
     negative:
-        li t3, -1                   # o numero asseguir vai ser negativo
+        li t3, -1              # o número vai ser negativo (sinal negativo)
     
     next_digit:
-        addi a1 ,a1 ,1              # vai para o proximo byte
-        j loop_byte                 # volta para o loop
+        addi a1 ,a1 ,1         # avança para o próximo byte
+        j loop_byte
 
     new_row:
-        addi t2 ,t2 ,1          # +1 row
+        addi t2 ,t2 ,1         # conta mais uma linha
         j space
     loop_end:
-        #mul s1, s1, t3
-        #sw s1, 0(a0)
-        #addi a0, a0, 4
-        mv a1 ,t2
-        mv a0, s0
-        lw ra, 0(sp)
-        lw s0, 4(sp)            # rstaurar o ra
+        mv a1 ,t2              # coloca em a1 o nº de linhas da matriz   
+        mv a0, s0              # coloca em a0 o endereço da matriz preenchida
+        lw ra, 0(sp)           # restaurar o ra
+        lw s0, 4(sp)            
         lw s1, 8(sp)
-        addi sp, sp ,12          # desalocar o stack
+        addi sp, sp ,12         # desalocar o stack
         jr ra                   # voltar para a chamada
 
 # ===========================================================================
@@ -438,80 +434,75 @@ parse_matrix_buffer:
 # (in)     a3: address to vocabulary buffer
 # ===========================================================================
 tokens_to_indices:
-    # a0 -> PONIRO PARA MATRIZ A PREENCHER
-    # a2 -> PONTEIROO PARAAA INPUT
-    # a3 -> PONTERIO PARA O VOCABULÁRIO
-
-    addi sp, sp, -16
+    addi sp, sp, -16        # reservar 16 bytes na stack
     sw ra, 0(sp)
     sw s0, 4(sp)
     sw s1, 8(sp)
     sw s2, 12(sp)
 
-    mv s0, a0               # não perder o inicio da matriz a encher
-    mv s1, a3               # não perder o inicio do vocabulário
-    mv s2, a2               # não perder o inicio do input a analizar
+    mv s0, a0               # guardar em s0 o endereço do início vetor de indices de input a preencher
+    mv s1, a3               # guardar em s1 o endereço do início do vocab buffer
+    mv s2, a2               # guardar em s2 o endereço do início do input buffer a analisar
 
-    li t3, 0                # tamanho do vetor
-    li t4, 0                # contador do indice do vocabulário
+    li t3, 0                # inicializa t3: contador do tamanho do vetor
+    li t4, 0                # inicializa t4: índice atual da palavra do vocab
 
     loop_input:
-        lb t1, 0(a2)                # analiza o t1
-        li t0, CONST_CHAR_NEWLINE   # codigo do Newline
-            beq t1, t0,next_input_word     # se t1 é '\n'
+        lb t1, 0(a2)                        # analisa o t1
+        li t0, CONST_CHAR_NEWLINE           # t0 = '\n'(newline)
+            beq t1, t0,next_input_word      # se t1 = '\n' -> salta para next_input_word
 
-        li t0, CONST_CHAR_EOF       # codigo do EOF
-            beq t1, t0, end_loop_tokens    # se t1 é EOF
+        li t0, CONST_CHAR_EOF               # t0 = EOF
+            beq t1, t0, end_loop_tokens     # se t1 = EOF -> salta para end_loop_tokens
 
     loop_vocab:
-        lb  t5, 0(a3)               # bit do vocab a analizar
-        lb  t1, 0(a2)               # bit do input a analizar
+        lb  t5, 0(a3)               # t5 = bit do vocab a analisar
+        lb  t1, 0(a2)               # t1 = bit do input a analisar
 
-        li t0, CONST_CHAR_EOF       # codigo do EOF
-            beq t5, t0, end_loop_tokens    # se t5 é EOF
+        li t0, CONST_CHAR_EOF              # t0 = EOF
+            beq t5, t0, end_loop_tokens    # se t5 = EOF -> salta para end_loop_tokens
 
-        loop_letter:
-            bne t1,t5,next_vocab_word #verifica se os bytes são iguais
+        loop_letter:     # compara as palavras do vocab com os inputs
+            bne t1,t5,next_vocab_word  # se t1 != t5: bits != -> palavras diferentes; próxima palavra
 
-            li t0, CONST_CHAR_NEWLINE   # codigo do Newline
-                beq t1, t0,add_word     # se t1 é '\n'
-            li t0, CONST_CHAR_SPACE     # codigo do SPACE
-                beq t1, t0, add_word    # se t1 é ' '
+            li t0, CONST_CHAR_NEWLINE   # t0 = '\n' (newline)
+                beq t1, t0,add_word     # se t1 = '\n': chegou ao fim da palavra com sucesso -> add_word
+            li t0, CONST_CHAR_SPACE     # t0 = ' ' (espaço)
+                beq t1, t0, add_word    # se t1 = ' ': chegou ao fim da palavra com sucesso -> add_word
             
-            addi a3, a3,1
-            addi a2, a2, 1
-            lb  t5, 0(a3)       # proximo bit do vocab a analizar
-            lb  t1, 0(a2)       # proximo bit do input a analizar
+            addi a3, a3,1        # avança o ponteiro do vocab buffer (+1)
+            addi a2, a2, 1       # avança o ponteiro do input buffer (+1)
+            lb  t5, 0(a3)        # t5 = próximo bit do vocab a analizar
+            lb  t1, 0(a2)        # t1 = próximo bit do input a analizar
             j loop_letter  
 
-    add_word:
-        sw t4, 0(a0)
+    add_word:            # houve correspondência -> registar o índice
+        sw t4, 0(a0)                # guarda o índice do vocab (t4) na posição atual do vetor
         addi t3, t3 ,1              # incrementa o tamanho do vetor 
         addi a0, a0, 4              # incrementa o endereço da matriz
         j next_input_word
         
-    next_vocab_word:
-        addi t4, t4, 1  # t4 = t4 + imm
-
+    next_vocab_word:    # não houve correspondência -> avançar no vocab
+        addi t4, t4, 1              # incrementa +1 ao indice atual da palavra no vocab
         ignore_line:
-            addi a3, a3, 1              # proximo bit (à frente do newline)
+            addi a3, a3, 1          # proximo bit (à frente do newline)
             lb t5, 0(a3)    
-            li t0, CONST_CHAR_NEWLINE   # codigo do Newline
-            bne t5, t0, ignore_line # verifica se é igual a newline
-        mv a2, s2                   # voltar ao inicio da palavra a analizar
-        addi a3, a3,1
+            li t0, CONST_CHAR_NEWLINE   # t0 = '\n' (newline)
+            bne t5, t0, ignore_line     # se t5 != '\n' ainda não chegou ao fim da linha
+        mv a2, s2             # repõe o ponteiro no início da palavra a analisar
+        addi a3, a3,1         # passa o '\n' para ficar no início da próxima palavra do vocab
         j loop_vocab
 
-    next_input_word: # meter o apontador (a2) na posiçao do proximo bit
-        addi a2,a2, 1
-        mv t4, x0
-        mv s2, a2
-        mv a3, s1
+    next_input_word:    # houve correspondência -> avançar no input
+        addi a2,a2, 1   # 'ultrapassa o \n onde ficou' e a2 aponta para o início do próximo input
+        mv t4, x0       # reinicia índice_vocab = 0
+        mv s2, a2       # atualiza (reset) para a nova palavra
+        mv a3, s1       # coloca a3 novamente no início do vocab
         j loop_input
 
     end_loop_tokens:
-        mv a0, s0           # a0 para s0
-        mv a1, t3           # a1 para o tamanho do vetor
+        mv a0, s0           # coloca em a0 o endereço base do vetor dos índices
+        mv a1, t3           # coloca em a1 o tamanho do vetor (nº de tokens encontrados)
         lw ra, 0(sp)
         lw s0, 4(sp)
         lw s1, 8(sp)
@@ -527,32 +518,30 @@ tokens_to_indices:
 # (in)     a3: number of tokens in the input (int)
 # ===========================================================================
 build_input_embeddings_matrix:
-    #a1 -> PONTIERO PARA MATRIZ EMBEDIG
-    #a2 -> PONTEIRO MATRIZ INPUTS
-    #a3 -> NUMERO DE TOKENS
     addi sp, sp, -12
     sw s1, 8(sp)    
     sw s0, 4(sp)
     sw ra, 0(sp)
     
+    mv s0, a0                   # guarda em s0 o endereço da matriz a preencher
+    mv s1, a1                   # guarda em s1 o inicio da matriz embedings vocab
 
-    mv s0, a0                   # endereço da matriz a preencher
-    mv s1, a1                   # inicio da matriz embedings vocab
+    li t0, 0                    # t0 = índice dos tokens
+    li t2, 0                    # t2 = offset (inicializado a 0)
 
-    li t0, 0                    # indice dos tokens
-    li t2, 0                    # offset
     loop_indice_vector:
-        bge t0, a3,end_indice_loop     # se o indice é superior ao limite
-        mv a1, s1               # voltar ao inicio da embeding
-        lw t1, 0(a2)            # o conteudo do endereço do dos inputs
+        bge t0, a3,end_indice_loop     # se t0 >= a3 (indice é maior que o limite): termina
+        mv a1, s1               # coloca a1 no inicio da embeddings
+        lw t1, 0(a2)            # t1 = conteúdo do endereço do vetor dos índices dos inputs
         slli t2, t1, 4          # calcula o offset
-        add a1, a1, t2         # o ponteiro final na matriz embedigs
+        add a1, a1, t2          # a1 = &base + offset; a1: ponteiro_final na matriz embeddings
         li t3, 4                # contador dos elementos por linha 
-        addi t0, t0 ,1          # incrementa o indice
-        addi a2, a2, 4          # proximo input    
+        addi t0, t0 ,1          # incrementa o índice
+        addi a2, a2, 4          # avança para o próximo input  
+
         adding_number:
-            beqz t3, loop_indice_vector # se t3 == 0 -> fim da linha
-            lw t2, 0(a1)                # conteudo do embeding
+            beqz t3, loop_indice_vector # se t3 = 0 -> fim da linha
+            lw t2, 0(a1)                # t2 = conteúdo do embedding
             sw t2, 0(a0)                # insere na matriz (a0)
             addi a0, a0 ,4              # incrementa o ponteiro da matriz (a0)
             addi a1, a1, 4              # incrementa o ponteiro do embeding
@@ -560,12 +549,12 @@ build_input_embeddings_matrix:
             j adding_number
 
     end_indice_loop:
-    mv a0, s0                           # retornar o ponteiro para a matriz
-    lw ra, 0(sp)
-    lw s0, 4(sp)
-    lw s1, 8(sp)
-    addi sp, sp, 12
-    jr ra
+        mv a0, s0            # coloca em a0 da matriz dos embeddings preenchida
+        lw ra, 0(sp)
+        lw s0, 4(sp)
+        lw s1, 8(sp)
+        addi sp, sp, 12
+        jr ra
 
 # ===========================================================================
 # FUNCTION MATRIX_MULTIPLY:
@@ -578,7 +567,7 @@ build_input_embeddings_matrix:
 # (in)     a6: #columns of the second matrix (int)
 # ===========================================================================
 matrix_multiply:
-    addi sp sp -32
+    addi sp sp -32    # reserva 32 bytes na stack
     sw ra, 0 (sp)
     sw s0, 4 (sp)
     sw s1, 8 (sp)
@@ -588,49 +577,43 @@ matrix_multiply:
     sw s5, 24(sp)  
     sw s6, 28(sp)
        
-    # store dos argumentos
- 
-
-    #blez a5, exit_with_error
-    #blez a2, exit_with_error
-    #bne a3, a5, exit_with_error
-    mv s0, a0
-    mv s1, a1           # apontador para o inicio da 1ª matriz
-    mv s2,a4            # apontador para o inicio da 2ª matriz
-    mv s3,s0            # ponteiro andante da matriz de retorno
-    mv s4, a6    
-    mv s5, a2
-    mv s6, a4           # apontador difinitivo da 2ª matriz
+    # Guardar argumentos:
+    mv s0, a0    # guarda em s0 o endereço da matriz a preencher
+    mv s1, a1    # guarda em s1 o endereço do inicio da 1ª matriz (embeddings)
+    mv s2,a4     # guarda em s2 o endereço do inicio da 2ª matriz (W_Q/W_K/W_V)
+    mv s3,s0     # guarda em s3 o ponteiro 'andante' da matriz de retorno
+    mv s4, a6    # guarda em s4 o nº de colunas da 2ª matriz
+    mv s5, a2    # guarda em s5 o nº de linhas da 2ª matriz
+    mv s6, a4    # guarda em s6 o apontador definitivo da 2ª matriz
     
     loop_matrix:  
-        beqz s5, matrix_mult_end
-        mv a6,s4
-        mv s2,s6
+        beqz s5, matrix_mult_end    # se s5 = 0: termina (já viu todas as linhas)
+        mv a6,s4                    # coloca em a6 o nº de colunas da 2ª matriz
+        mv s2,s6                    # coloca em s2 o apontador definitivo da 2ª matriz
         loop_column:
-            beqz a6, next_line
-            addi a6,a6,-1
+            beqz a6, next_line      # se a6 = 0: próxima linha
+            addi a6,a6,-1           # decrementa 1 nas linhas
             j apply_dot
 
     apply_dot:
-        mv a1,s1
-        mv a2,s2
-        li a3, 4
-        li a4, 4
+        mv a1,s1            # coloca em a1 o endereço do 1º vetor
+        mv a2,s2            # coloca em a2 o endereço do 2ª vetor
+        li a3, 4            # a3 = tamanho do vetor
+        li a4, 4            # a4 = tamanho do incremento (=4)
         jal ra, dot
-        sw a1, 0(s3)
-        addi s3, s3, 4
-        addi s2, s2, 4
+        sw a1, 0(s3)        # a1 = resultado do produto interno guardado em s3
+        addi s3, s3, 4      # incrementar o ponteiro 'andante' da matriz a preencher
+        addi s2, s2, 4      # incrementar ponteiro da 2ª matriz
         j loop_column
     
     next_line:
-        addi s1, s1, 16
-        addi s5, s5, -1
-        
+        addi s1, s1, 16    # incrementa 16 (4 elems por linha: 4*4 = 16)
+        addi s5, s5, -1    # decrementa 1; -1 linha por analisar
         j loop_matrix
 
     matrix_mult_end:
-        mv a0, s0
-        lw ra, 0(sp)
+        mv a0, s0        # coloca em a0 o endereço da matriz preenchida
+        lw ra, 0(sp)     # restaurar a stack
         lw s0 ,4(sp)
         lw s1, 8(sp)
         lw s2, 12(sp)
@@ -638,7 +621,7 @@ matrix_multiply:
         lw s4, 20(sp)
         lw s5, 24(sp)
         lw s6, 28(sp)
-        addi sp, sp, 32
+        addi sp, sp, 32    # desalocar os 32 bytes reservados no início
         jr ra
 
 # ===========================================================================
