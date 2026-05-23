@@ -258,7 +258,7 @@ main:
     la a2, K_MATRIX                 # coloca em a2 o endereço da matriz K
     lw a3, INPUT_TOTAL_TOKENS       # coloca em a3 o nº de linhas de Q e K (= nº de tokens)
     li a4, 4                        # coloca em a4 o nº de colunas de Q e K = 4
-    addi t0, a3, -1                 # desincrementa 1 ao a3 (índice começa em 0)
+    addi t0, a3, -1                 # decrementa 1 ao a3 (índice começa em 0)
     mv a5, t0                       # coloca em a5  o índice-alvo
 
     jal ra, compute_scores
