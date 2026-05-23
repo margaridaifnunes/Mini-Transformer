@@ -699,14 +699,17 @@ compute_scores_end:
 # (in)  a4: target row
 # ===========================================================================
 select_vector_in_matrix:
-    bgt a4, a2, invalid_row
-    mul t0, a4, a3
-    slli t0, t0, 2
-    add a0, a1, t0
+    bgt a4, a2, invalid_row    # se a4 >= a2 ultrapassa o limite
+
+    # calcular address = selected_vector[base] + target_row * columns * 4 bytes
+    mul t0, a4, a3    # t0 = target_row * columns
+    slli t0, t0, 2    # t0 = (target_row * columns) * 4
+    add a0, a1, t0    # t0 = selected_vector[base] + (target_row * columns * 4)
+
     jr ra
 
 invalid_row:
-  li a7, 93
+  li a7, 93    # exit
   ecall
 
 # ===========================================================================
@@ -717,7 +720,7 @@ invalid_row:
 # (in)  a2: number of tokens in vocabulary (int)
 # ===========================================================================
 decide_next_token:
-    addi sp, sp, -24
+    addi sp, sp, -24    # reservar 24 bytes na stack
     sw ra, 0(sp)
     sw s0, 4(sp)
     sw s1, 8(sp)
@@ -725,44 +728,41 @@ decide_next_token:
     sw s3, 16(sp)
     sw s4, 20(sp)
 
-
-    mv s0, a0   # ponteiro para o vetor
-    mv s1, a1   # ponteiro para os embedings do vocabulário
-    mv s2, a2   # nº de tokens no vocabulário
+    mv s0, a0   # guarda em s0 o endereço do target_vector
+    mv s1, a1   # guarda em s1 o endereco dos embedings do vocab
+    mv s2, a2   # guarda em s2 o nº de tokens do vocabulário
     
-    la s4, DECIDE_VECTOR
-    li t0, 0
-    li t1, 0
-    li s3, 0    # contador do indice do vocabulário
+    la s4, DECIDE_VECTOR    # coloca em s4 o endereço do decide_vector
+    li t0, 0                # t0 = 0 (cálculo de índices)
+    li t1, 0                # t1 = 0 
+    li s3, 0                # s3 = 0; contador/ índice atual do vocab
     loop_embeding:
-        beq s3,s2, decide_end
-        mv a1, s0        # apontador para a linha V[1]
-        mv a2, s1        # apontador para o embeding
-        li a3, 4
-        li a4, 1
+        beq s3,s2, decide_end    # se s3 = s2: já processamos todos os tokens do vocab
+        mv a1, s0        # coloca a1 com o endereço do target_vector
+        mv a2, s1        # coloca a2 com o endereço do embedding atual
+        li a3, 4         # coloca a3 com o tamanho dos vetores (=4)
+        li a4, 1         # coloca a4 com o incremento (=1) entre elems
         jal ra, dot
-        #bnez a0, salta
-        slli t0, s3, 2    # calcula o indice
-        add t0, s4, t0    # Adiciona ao ponteiro original
-        sw a1, 0(t0)      # salva num vetor 
-        addi s1, s1, 16   # vai para a próxima linha dos embedings
-        addi s3, s3, 1    # incrementa mais 1 iteração
+
+        slli t0, s3, 2    # calcula o offset para a posição s3 no decide_vector
+        add t0, s4, t0    # t0 = &decide_vector[s3]
+        sw a1, 0(t0)      # guarda o resultado do dot em decide_vector[s3] 
+        addi s1, s1, 16   # avança para a próxima linha dos embeddings (4 elems p/linha * 4 = 16)
+        addi s3, s3, 1    # incrementa o índice do token
         j loop_embeding
 
-
     decide_end:
-        mv a1, s4
-        mv a2, s2
+        mv a1, s4           # coloca em a1 o endereço do decide_vector (array de dot results)
+        mv a2, s2           # coloca em a2 o nº de tokens (tamanho do array)
         jal ra, argmax
-        #bnez a0, salta
-        mv a0, a1
-        lw ra, 0(sp)
+        mv a0, a1           # coloca em a0 o índice do token previsto (+ score)
+        lw ra, 0(sp)        # restaurar a stack
         lw s0, 4(sp)
         lw s1, 8(sp)
         lw s2, 12(sp)
         lw s3, 16(sp)
         lw s4, 20(sp)
-        addi sp, sp, 24
+        addi sp, sp, 24    # realocar os 24 bytes reservados no início
         jr ra
         
 
