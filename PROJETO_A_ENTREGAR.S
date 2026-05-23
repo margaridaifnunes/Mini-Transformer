@@ -634,57 +634,52 @@ matrix_multiply:
 # (in)     a5: target token index for which we want to compute the score (int)
 # ===========================================================================
 compute_scores:
-    addi sp, sp, -32
+    addi sp, sp, -32    # reserva 32 bytes, na memória
     sw ra, 0(sp)
-    sw s0, 4(sp)        # para o offset da 
-    sw s1, 8(sp)        # ponteiro para o Q
+    sw s0, 4(sp)  
+    sw s1, 8(sp)
     sw s2, 12(sp)
     sw s3, 16(sp)
     sw s4, 20(sp)
     sw s5, 24(sp)
     sw s6, 28(sp)
-
-    #beq a3,a4, erro
     
-    mv s0, a0           # ponteiro de retorno
-    mv s1, a1           # ponteiro de Q
-    mv s2, a2           # ponteiro de K
-    mv s3, a3           # ponteiro de scores
-    mv s4, a4
-    mv s5, a0           # ponteiro FIXO do scores_vector
+    mv s0, a0           # coloca em s0 o endereço do vetor de scores a preencher
+    mv s1, a1           # coloca em s1 o endereço da matriz Q
+    mv s2, a2           # coloca em s2 o endereço da matriz K
+    mv s3, a3           # coloca em s3 o nº de linhas de Q e K
+    mv s4, a4           # coloca em s4 o nº de colunas de Q e K
+    mv s5, a0           # ponteiro 'fixo' do scores_vector (para o início)
 
-            #a5 É O N-1 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!      
-    
+    # a5 = n-1
 
-    # Calcular Q[target] adress = Q[base] + Target * columns * 4 bytes
-    mul t0, a5, s4      # Target X columns
-    slli t0, t0, 2      # Traget X columns * 4 bytes
-    add s1, t0, s1      # soma o offset ao ponteiro de Q que usamos  
+    # Calcular Q[target]_address = Q[base] + Target * columns * 4 bytes:
+    mul t0, a5, s4      # Target * columns
+    slli t0, t0, 2      # (Target * columns) * 4 bytes
+    add s1, t0, s1      # Q[base] + (Target * columns * 4)
 
-    
-
-    # score[j] = dot(Q[n-1], K[j])
-    li s6,0                             #s6 -> j
+    # Calcular score[j] = dot(Q[n-1], K[j]); para todos os j's (posições na frase):
+    li s6,0                             # s6 -> j (inicializado a 0)
     loop_compute_scores:
-        bge s6, s3, compute_scores_end
+        bge s6, s3, compute_scores_end  # se s6 >= s3: termina
         # k[j]:
-            slli t0, s6, 4       # incremento para o ponteiro de K
+            slli t0, s6, 4      # incremento para o ponteiro de K
             add t1, s2, t0      # ponteiro de K a multiplicar
     
-        mv a1, s1
-        mv a2, t1
-        mv a3, s4
-        li a4, 1
+        mv a1, s1               # coloca em a1 o endereço do 1º vetor
+        mv a2, t1               # coloca em a2 o endereço do 2º vetor
+        mv a3, s4               # coloca em a3 o tamanho dos vetores
+        li a4, 1                # coloca em a4 o incremento
         jal ra, dot
-        # falta verificar se dá success
-        sw a1, 0(s0)
-        addi s0, s0, 4  # avança um byte no vetor final
-        addi s6, s6, 1  # incrementa o contador do loop
+
+        sw a1, 0(s0)        # guarda o resultado do dot em s0
+        addi s0, s0, 4      # avança um byte no vetor_final
+        addi s6, s6, 1      # incrementa o contador do loop
         j loop_compute_scores
 
 compute_scores_end:
-    mv a0, s5
-    lw s6, 28(sp)
+    mv a0, s5               # coloca em a0 o endereço do vetor de scores preenchido
+    lw s6, 28(sp)           # restaurar a stack
     lw s5, 24(sp)
     lw s4, 20(sp)
     lw s3, 16(sp)
@@ -692,7 +687,7 @@ compute_scores_end:
     lw s1, 8(sp)
     lw s0, 4(sp)
     lw ra, 0(sp)
-    addi sp, sp, 32
+    addi sp, sp, 32         # desalocar os 32 bytes reservados no início
     jr ra
 
 # ===========================================================================
