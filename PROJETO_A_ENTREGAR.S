@@ -82,36 +82,36 @@ main:
     ###########################################################################
     # Read vocabulary
     ###########################################################################
-    la a0, VOCABULARY_FILENAME  # coloca o adress o ficheiro do vocabulário
-    la a1, VOCAB_BUFFER         # coloca o adress onde vai colocar o buffer do ficheiro
+    la a0, VOCABULARY_FILENAME  # coloca em a0 o endereço do ficheiro do vocabulário
+    la a1, VOCAB_BUFFER         # coloca em a1 o endereço onde vai colocar o buffer do ficheiro
     li a2, CONST_BUFFER_SIZE    # coloca em a2 o número máximo de bytes a ler
     
     jal ra, read_file
-    mv s0, a1
+    mv s0, a1                   # guarda o buffer do vocabulário
     ###########################################################################
     # Read input
     ###########################################################################
-    la a0, INPUT_FILENAME       # coloca o adress o ficheiro do input
-    la a1, INPUT_BUFFER         # coloca o adress onde vai colocar o buffer do ficheiro
+    la a0, INPUT_FILENAME       # coloca em a0 o endereço o ficheiro do input
+    la a1, INPUT_BUFFER         # coloca em a1 o endereço onde vai colocar o buffer do ficheiro
     li a2, CONST_BUFFER_SIZE    # coloca em a2 o número máximo de bytes a ler
     
     jal ra, read_file
-    mv s1, a1                   # salva o buffer do input
+    mv s1, a1                   # guarda o buffer do input
     ###########################################################################
     # Read W_K matrix
     ###########################################################################
-    la a0, W_K_FILENAME          # coloca o adress o ficheiro do input
-    la a1, MATRIX_BUFFER         # coloca o adress onde vai colocar o buffer do ficheiro
+    la a0, W_K_FILENAME          # coloca em a0 o endereço do ficheiro da matriz W_K
+    la a1, MATRIX_BUFFER         # coloca em a1 o endereço onde vai colocar o buffer do ficheiro
     li a2, CONST_BUFFER_SIZE     # coloca em a2 o número máximo de bytes a ler
 
     jal ra, read_file
     ###########################################################################
     # Parse W_K matrix from buffer
     ###########################################################################
-    la a0, W_K_MATRIX
+    la a0, W_K_MATRIX            # coloca em a0 o endereço da matriz W_K
 
     jal ra, parse_matrix_buffer
-    mv s2, a0 
+    mv s2, a0                    # guarda em s2 o endereço da matriz preenchida
     dededebug:
     li a1, 4
     li a2, 4
@@ -119,19 +119,19 @@ main:
     ###########################################################################
     # Read W_Q matrix
     ###########################################################################
-    la a0, W_Q_FILENAME          # coloca o adress o ficheiro do input
-    la a1, MATRIX_BUFFER         # coloca o adress onde vai colocar o buffer do ficheiro
+    la a0, W_Q_FILENAME          # coloca em a0 o endereço do ficheiro da matriz W_Q
+    la a1, MATRIX_BUFFER         # coloca em a1 o endereço onde vai colocar o buffer do ficheiro
     li a2, CONST_BUFFER_SIZE     # coloca em a2 o número máximo de bytes a ler
 
     jal ra, read_file
     ###########################################################################
     # Parse W_Q matrix from buffer
     ###########################################################################
-    la a0, W_Q_MATRIX
+    la a0, W_Q_MATRIX            # coloca em a0 o endereço da matriz W_Q
 
     jal ra, parse_matrix_buffer
-    mv s7, a1
-    mv s8, a0
+    mv s7, a1                    # guarda em s7 o nº de linhas
+    mv s8, a0                    # guarda em s8 o endereço da matriz preenchida
     li a1, 4
     li a2, 4
     jal ra, print_matrix
@@ -146,43 +146,41 @@ main:
     ###########################################################################
     # Parse W_V matrix from buffer
     ###########################################################################
-    la a0, W_V_MATRIX
+    la a0, W_V_MATRIX            # coloca em a0 o endereço da matriz W_V
 
     jal ra, parse_matrix_buffer
-    mv s6, a0
-    mv s9, a1
+    mv s6, a0                    # guarda em s6 o endereço da matriz preenchida
+    mv s9, a1                    # guarda em s9 o nº de linhas
     li a2, 4
     jal ra, print_matrix
-    
- 
      ###########################################################################
     # Read embeddings matrix
     ###########################################################################
-    la a0, EMBEDDINGS_FILENAME   # coloca o adress o ficheiro do input
-    la a1, MATRIX_BUFFER         # coloca o adress onde vai colocar o buffer do ficheiro
+    la a0, EMBEDDINGS_FILENAME   # coloca em a0 o endereço do ficheiro da matriz dos embeddings
+    la a1, MATRIX_BUFFER         # coloca em a1 o endereço do buffer da matriz
     li a2, CONST_BUFFER_SIZE     # coloca em a2 o número máximo de bytes a ler
 
     jal ra, read_file
-    mv s3, a1                   # salva o buffer da matriz 
+    mv s3, a1                   # guarda o buffer da matriz 
     ###########################################################################
     # Parse vocabulary embeddings matrix from buffer
     ###########################################################################
-    la a0, VOCAB_EMBEDDINGS_MATRIX  
-    la a1, MATRIX_BUFFER
+    la a0, VOCAB_EMBEDDINGS_MATRIX  # coloca em a0 o endereço da matriz do vocab dos embeddings
+    la a1, MATRIX_BUFFER            # coloca em a1 o buffer
     
     jal ra, parse_matrix_buffer
-    mv s11, a0                   # salva o endereço da matriz    
-    la t0, VOCAB_TOTAL_TOKENS
-    sw a1, 0(t0)                 # dá store do tamnho do vocabulário   
+    mv s11, a0                   # guarda em s11 o endereço da matriz preenchida
+    la t0, VOCAB_TOTAL_TOKENS    # coloca em t0 o nº total de tokens
+    sw a1, 0(t0)                 # guarda, na memória,o tamanho do vocab   
     ###########################################################################
     # Convert input tokens to indices
     ###########################################################################
-    mv a3, s0                   # vai buscar o buffer do vocabulario
-    mv a2, s1                   #vai buscar o buffer dos inputs
-    la a0, INPUT_INDICES_VECTOR
+    mv a3, s0                       # coloca em s3 o buffer do vocab
+    mv a2, s1                       # coloca em a2 o buffer dos inputs
+    la a0, INPUT_INDICES_VECTOR     # coloca em a0 o vetor dos índices dos inputs
        
     jal ra, tokens_to_indices
-    mv s4, a1  
+    mv s4, a1                       # guarda em s4 o nº de tokens do input
     
     ###########################################################################
     # Build input embeddings matrix
@@ -190,23 +188,23 @@ main:
     #a1 -> PONTIERO PARA MATRIZ EMBEDIG
     #a2 -> PONTEIRO MATRIZ INPUTS
     #a3 -> NUMERO DE TOKENS
-    mv a2, a0                       # a2 -> penteiro dos inpits (input)
-    mv a3, a1                       # a3 -> tamanhodo vetor (numero de tokens)
-    mv a1, s11                      # a1 -> matriz do vocab preenchinda
-    la a0, INPUT_EMBEDDINGS_MATRIX
+    mv a2, a0                         # a2 é o ponteiro do input
+    mv a3, a1                         # a3 é o tamanho do vetor (nº de tokens)
+    mv a1, s11                        # a1 é a matriz do vocab preenchida
+    la a0, INPUT_EMBEDDINGS_MATRIX    # coloca em a0 o endereço da matriz de inputs dos embeddings
     
     jal ra, build_input_embeddings_matrix
-    mv s5, a0
-    la t2, INPUT_TOTAL_TOKENS  
-    sw a3, 0(t2)                    # guardar o nº de tokens para select_vector
+    mv s5, a0                         # guarda em s5 o endereço da matriz preenchida
+    la t2, INPUT_TOTAL_TOKENS         # coloca em t2 o nº total de tokens do input
+    sw a3, 0(t2)                      # guardar em s3 o nº de tokens para select_vector
     li a1, 3
     li a2, 4
     jal ra, print_matrix
     ###########################################################################
     # Build matrix Q
     ###########################################################################
-    la a0, K_MATRIX
-    mv a1, s5
+    la a0, K_MATRIX        # coloca em a0 o endereço de K_MATRIX
+    mv a1, s5              # coloca em a1 a matriz dos embeddings preenchida
     mv a2, s4
     li a3, 4
     mv a4, s2
