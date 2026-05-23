@@ -311,11 +311,15 @@ main:
     li a0, 0
     j exit_with_code                                # Exit with code 0
 
+
+# ===========================================================================
+# FUNCTION READ_FILE:
 # Read from a text file into a buffer.
 # (in/out) a0: filename address (char*)
 # (in/out) a1: destination buffer
 # (in)     a2: maximum number of bytes to read
 # (out)    a7: code -1 for error
+# ===========================================================================
 read_file:
     addi sp,sp,-16
     sw ra, 12(sp)
@@ -351,13 +355,15 @@ invalid_fd:
   li a7, 93
   ecall
 
-
+# ===========================================================================
+# FUNCTION PARSE_MATRIX_BUFFER:
 # Assumes the matrix is stored in the buffer as space-separated integers.
 # Assumes columns are separated by 1 space (' '), and rows by 1 newline ('\n').
 # Assumes only signed integers are provided.
 # (in/out) a0: address of the matrix to fill (int*)
 # (out)    a1: number of rows in the matrix (int)
 # (in)     a1: address of the buffer containing the matrix data (char*)
+# ===========================================================================
 parse_matrix_buffer:
     addi sp ,sp -12              # reserva 12 bytes para a stack
     sw ra, 0(sp)
@@ -423,11 +429,14 @@ parse_matrix_buffer:
         addi sp, sp ,12          # desalocar o stack
         jr ra                   # voltar para a chamada
 
+# ===========================================================================
+# FUNCTION TOKENS_TO_INDICES:
 # Converts the input tokens into their corresponding indices in the vocabulary.
 # (in/out) a0: address of input indices vector to fill (int*)
 # (out)    a1: size of input indices vector (number of tokens in input)
 # (in)     a2: address to input buffer
 # (in)     a3: address to vocabulary buffer
+# ===========================================================================
 tokens_to_indices:
     # a0 -> PONIRO PARA MATRIZ A PREENCHER
     # a2 -> PONTEIROO PARAAA INPUT
@@ -510,10 +519,13 @@ tokens_to_indices:
         addi sp, sp, 16
         jr ra
 
+# ===========================================================================
+# FUNCTION BUILD_INPUT_EMBEDDINGS_MATRIX:
 # (in/out) a0: address of the output matrix to fill (int*)
 # (in)     a1: address of the vocabulary embeddings matrix (int*)
 # (in)     a2: address of the input indices array (int*)
 # (in)     a3: number of tokens in the input (int)
+# ===========================================================================
 build_input_embeddings_matrix:
     #a1 -> PONTIERO PARA MATRIZ EMBEDIG
     #a2 -> PONTEIRO MATRIZ INPUTS
@@ -555,6 +567,8 @@ build_input_embeddings_matrix:
     addi sp, sp, 12
     jr ra
 
+# ===========================================================================
+# FUNCTION MATRIX_MULTIPLY:
 # (in/out) a0: address of the output matrix to fill (int*)
 # (in)     a1: address of the first matrix (int*)
 # (in)     a2: #rows of the first matrix (int)
@@ -562,6 +576,7 @@ build_input_embeddings_matrix:
 # (in)     a4: address of the second matrix (int*)
 # (in)     a5: #rows of the second matrix (int)
 # (in)     a6: #columns of the second matrix (int)
+# ===========================================================================
 matrix_multiply:
     addi sp sp -32
     sw ra, 0 (sp)
@@ -626,12 +641,15 @@ matrix_multiply:
         addi sp, sp, 32
         jr ra
 
+# ===========================================================================
+# FUNCTION COMPUTE_SCORES:
 # (in/out) a0: address of the output scores vector to fill (int*)
 # (in)     a1: address of Q matrix (int*)
 # (in)     a2: address of K matrix (int*)
 # (in)     a3: #rows of Q and K (int)
 # (in)     a4: #columns of Q and K (int)
 # (in)     a5: target token index for which we want to compute the score (int)
+# ===========================================================================
 compute_scores:
     addi sp, sp, -32
     sw ra, 0(sp)
@@ -655,7 +673,7 @@ compute_scores:
             #a5 É O N-1 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!      
     
 
-    # Clacular Q[target] adress = Q[base] + Target * columns * 4 bytes
+    # Calcular Q[target] adress = Q[base] + Target * columns * 4 bytes
     mul t0, a5, s4      # Target X columns
     slli t0, t0, 2      # Traget X columns * 4 bytes
     add s1, t0, s1      # soma o offset ao ponteiro de Q que usamos  
@@ -694,11 +712,14 @@ compute_scores_end:
     addi sp, sp, 32
     jr ra
 
+# ===========================================================================
+# FUNCTION SELECT_VETOR_IN_MATRIX:
 # (out) a0: address of the selected vector (int*)
 # (in)  a1: address of matrix (int*)
 # (in)  a2: #rows (int)
 # (in)  a3: #cols (int)
 # (in)  a4: target row
+# ===========================================================================
 select_vector_in_matrix:
     bgt a4, a2, invalid_row
     mul t0, a4, a3
@@ -710,10 +731,13 @@ invalid_row:
   li a7, 93
   ecall
 
+# ===========================================================================
+# FUNCTION DECIDE_NEXT_TOKEN:
 # (out) a0: index of the predicted token in the vocabulary (int)
 # (in)  a0: address of target vector (int*)
 # (in)  a1: vocabulary embeddings address (int*)
 # (in)  a2: number of tokens in vocabulary (int)
+# ===========================================================================
 decide_next_token:
     addi sp, sp, -24
     sw ra, 0(sp)
@@ -763,14 +787,6 @@ decide_next_token:
         addi sp, sp, 24
         jr ra
         
-
-
-
-
-
-
-
-
 
 #############################################################################################################
 # Dot product and argmax helper functions.
