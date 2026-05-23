@@ -9,9 +9,7 @@ Dúvidas/Questões:
 
 Não esquecer (no fim):
  - retirar labels de debbug;
- - comentar tudo em inglês ou tudo em ptpt;
- - reler comments e rever linhas comentadas de erros... criar um code_93 no final para
-   evitar duplicação de código;
+ - 
 
 Path's do Henrique:
 
