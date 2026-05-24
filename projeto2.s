@@ -188,7 +188,7 @@ main:
     mv s5, a0                         # guarda em s5 o endereço da matriz preenchida
     la t2, INPUT_TOTAL_TOKENS         # coloca em t2 o nº total de tokens do input
     sw a3, 0(t2)                      # guardar em s3 o nº de tokens para select_vector
-
+    debugging:
     ###########################################################################
     # Build matrix K
     ###########################################################################
@@ -456,14 +456,17 @@ tokens_to_indices:
         
     next_vocab_word:    # não houve correspondência -> avançar no vocab
         addi t4, t4, 1              # incrementa +1 ao indice atual da palavra no vocab
+        li t0, CONST_CHAR_NEWLINE   # t0 = '\n' (newline)
         ignore_line:
+           
+            beq t5, t0, ignore_end # se t5 != '\n' ainda não chegou ao fim da linha
             addi a3, a3, 1          # proximo bit (à frente do newline)
             lb t5, 0(a3)    
-            li t0, CONST_CHAR_NEWLINE   # t0 = '\n' (newline)
-            bne t5, t0, ignore_line     # se t5 != '\n' ainda não chegou ao fim da linha
-        mv a2, s2             # repõe o ponteiro no início da palavra a analisar
-        addi a3, a3,1         # passa o '\n' para ficar no início da próxima palavra do vocab
-        j loop_vocab
+            j ignore_line
+        ignore_end:    
+             mv a2, s2             # repõe o ponteiro no início da palavra a analisar    
+            addi a3, a3,1         # passa o '\n' para ficar no início da próxima palavra do vocab
+            j loop_vocab
 
     next_input_word:    # houve correspondência -> avançar no input
         addi a2,a2, 1   # 'ultrapassa o \n onde ficou' e a2 aponta para o início do próximo input
@@ -758,7 +761,7 @@ dot:
     mv t1, zero                                     # t1 will be our loop index
     # Let's see first if SIZE < 1, and jump to dot_end if that's the case.
     slti t2, a3, 1                                  # t2 = (SIZE < 1)
-    beq t2, zero, dot_loop                          # If SIZE >= 1, we can proceed to the loop
+    beq t2, zero, dot_loop                         # If SIZE >= 1, we can proceed to the loop
     li a0, 50                                       # Set a0 to 50 to indicate an error (invalid size)
     j dot_end                                       # If SIZE < 1, jump to dot_end
 dot_loop:
