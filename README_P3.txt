@@ -17,7 +17,7 @@
   
   -> Opcodes associados às isntruções:
   li: 0
-  add, dot e dota:0
+  add, dot e dota: 1
   
   -> func2 associados às instruções:
   add:  00
