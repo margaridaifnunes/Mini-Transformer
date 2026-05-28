@@ -21,8 +21,8 @@
   
   -> func2 associados às instruções:
   add:  00
-  dot:  01
-  dota: 10
+  dot:  10
+  dota: 11
 
 # Justificação das Principais decisões tomadas:
 
