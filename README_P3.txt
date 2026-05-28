@@ -10,10 +10,10 @@
 # Implementação da ISA:
   
   -> Instruções:
-  li:                      immed[15:5]; rd[4:2]; opcode[1:0]
-  add:             rb[9:7]; func2[6:5]; rd[4:2]; opcode[1:0]
-  dot              rb[9:7]; func2[6:5]; rd[4:2]; opcode[1:0]
-  dota: ra[12:10]; rb[9:7]; func2[6:5]; rd[4:2]; opcode[1:0]
+  li:                      immed[15:4]; rd[3:1]; opcode[0]
+  add:             rb[8:6]; func2[5:4]; rd[3:1]; opcode[0]
+  dot              rb[8:6]; func2[5:4]; rd[3:1]; opcode[0]
+  dota:  ra[11:9]; rb[8:6]; func2[5:4]; rd[3:1]; opcode[0]
   
   -> Opcodes associados às instruções:
   li: 0
@@ -23,6 +23,9 @@
   add:  00
   dot:  10
   dota: 11
+
+### modificar o dota !!!
+### fazer o func3 com 3 bits???
 
 # Justificação das Principais decisões tomadas:
 
@@ -50,3 +53,4 @@ rd = rd + (A*C) + (B*D)
 # sugestão: no li usar sign extension: senão como ponho -1??  Justificar isto no read.me
 # sinais de controlo: ALU, sel...
 
+li x2, 4
