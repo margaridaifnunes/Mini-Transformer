@@ -1,5 +1,5 @@
 # ===========================================================================
-# PROJETO_2 IAC
+# PROJETO_3 IAC
 # Grupo: Número 18
 # Grupo constituído por:
 #    - Henrique Ascenção Lopes da Silva Gonçalves      ISTID: ist1118062
@@ -15,7 +15,7 @@
   dot              rb[9:7]; func2[6:5]; rd[4:2]; opcode[1:0]
   dota: ra[12:10]; rb[9:7]; func2[6:5]; rd[4:2]; opcode[1:0]
   
-  -> Opcodes associados às isntruções:
+  -> Opcodes associados às instruções:
   li: 0
   add, dot e dota: 1
   
@@ -25,3 +25,9 @@
   dota: 10
 
 # Justificação das Principais decisões tomadas:
+
+
+
+# COMMENTS(A APAGAR NO FIM):
+ selB = selA + 1
+ selD = selC + 1
