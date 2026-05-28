@@ -8,5 +8,4 @@ Project for Introduction to Computer Architecture
 3rd Project ->
 
 Questões para a aula prática:
-  - quando é o teste prático? O que devemos esperar? é só para o projeto 2? que tipo de perguntas podem fazer?
-  - quando será a parte oral do teste prático?
+  -> dúvidas no readme_p3.txt
