@@ -29,5 +29,22 @@
 
 
 # COMMENTS(A APAGAR NO FIM):
- selB = selA + 1
- selD = selC + 1
+DOT:
+  RD: rd
+  A: rs
+  B: rd + 1
+  D: rs + 1
+
+rd = (RD * A) + (B * D)
+
+DOTA:
+  SELA: rs1
+  SELB: rs1 + 1
+  SELC: rs2
+  SELD: rs2 + 1
+  SELR: rd
+
+rd = rd + (A*C) + (B*D)
+
+
+### falta mudar o func2 de tds!!!! FRIENDLY REMINDER :)
