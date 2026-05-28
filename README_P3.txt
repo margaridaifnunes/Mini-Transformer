@@ -23,3 +23,5 @@
   add:  00
   dot:  01
   dota: 10
+
+# Justificação das Principais decisões tomadas:
