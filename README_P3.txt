@@ -45,6 +45,3 @@ DOTA:
   SELR: rd
 
 rd = rd + (A*C) + (B*D)
-
-
-### falta mudar o func2 de tds!!!! FRIENDLY REMINDER :)
