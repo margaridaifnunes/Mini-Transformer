@@ -48,3 +48,5 @@ rd = rd + (A*C) + (B*D)
 
 
 # sugestão: no li usar sign extension: senão como ponho -1??  Justificar isto no read.me
+# sinais de controlo: ALU, sel...
+
