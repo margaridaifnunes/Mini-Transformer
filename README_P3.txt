@@ -15,7 +15,6 @@
   dot    rd[11:9]; rb[8:6]; func2[5:4]; rd[3:1]; opcode[0]  ( aumento a ISA; - MUX e complexidade do circuito)
   dota:  ra[11:9]; rb[8:6]; func2[5:4]; rd[3:1]; opcode[0]
 
-
 ### ( + código pouco impacto; + lógica -> impacto grande no espaço pequeno e na eficiência do processador;
       complexidade de portas; e financeiro)
 trade off entre - lógica  e + complexidade da ISA
