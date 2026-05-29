@@ -23,7 +23,7 @@ trade off entre - lógica  e + complexidade da ISA
   li: 0
   add, dot e dota: 1
   
-  -> func2 associados às instruções:
+  -> func3 associados às instruções:
   add:  000
   dot:  100
   dota: 010
