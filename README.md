@@ -8,4 +8,4 @@ Project for Introduction to Computer Architecture
 3rd Project -> p3.cir e read.me
 
 Questões para a aula prática:
-  -> dúvidas no readme_p3.txt
+  -> devemos tirar os probes no proj? como podemos testar?
