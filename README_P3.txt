@@ -35,6 +35,7 @@ trade off entre - lógica  e + complexidade da ISA
 
 # Justificação das Principais decisões tomadas:
 
+  -> bullets do enunciado!!
 
 
 # COMMENTS(A APAGAR NO FIM):
@@ -60,5 +61,3 @@ rd = rd + (A*C) + (B*D)
 
 # sugestão: no li usar sign extension: senão como ponho -1??  Justificar isto no read.me
 # sinais de controlo: ALU, sel...
-
-li x2, 4
