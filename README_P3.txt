@@ -25,8 +25,8 @@ trade off entre - lógica  e + complexidade da ISA
   
   -> func3 associados às instruções:
   add:  001
-  dot:  100
-  dota: 010
+  dot:  010
+  dota: 100
 
 ## dot é semelhante ao dota com a diferença do registo de destino
 
