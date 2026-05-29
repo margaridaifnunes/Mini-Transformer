@@ -31,7 +31,7 @@ trade off entre - lógica  e + complexidade da ISA
 ## dot é semelhante ao dota com a diferença do registo de destino
 
 ### modificar o dota !!!
-### fazer o func3 com 3 bits???
+### fazer o func3 com 3 bits??? justificar
 
 # Justificação das Principais decisões tomadas:
 
