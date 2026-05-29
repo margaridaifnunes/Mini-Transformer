@@ -9,3 +9,4 @@ Project for Introduction to Computer Architecture
 
 Questões para a aula prática:
   -> devemos tirar os probes no proj? como podemos testar?
+  -> testar edge cases (de todas as instruções)
