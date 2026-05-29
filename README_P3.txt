@@ -24,7 +24,7 @@ trade off entre - lógica  e + complexidade da ISA
   add, dot e dota: 1
   
   -> func3 associados às instruções:
-  add:  000
+  add:  001
   dot:  100
   dota: 010
 
