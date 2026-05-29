@@ -5,7 +5,7 @@ Project for Introduction to Computer Architecture
 
 2nd Project -> p2.s
 
-3rd Project ->
+3rd Project -> p3.cir e read.me
 
 Questões para a aula prática:
   -> dúvidas no readme_p3.txt
