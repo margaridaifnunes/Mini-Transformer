@@ -11,53 +11,50 @@
   
   -> Instruções:
   li:                       immed[15:4]; rd[3:1]; opcode[0]
-  add:   rd[12:10]; rb[9:7]; func2[6:4]; rd[3:1]; opcode[0]  (- circuitos no proj e evito um MUX  para trocar o Rd de sítio)
-  dot:   rd[12:10]; rb[9:7]; func2[6:4]; rd[3:1]; opcode[0]  ( aumento a ISA; - MUX e complexidade do circuito)
-  dota:  ra[12:10]; rb[9:7]; func2[6:4]; rd[3:1]; opcode[0]
+  add:   rd[12:10]; rb[9:7]; func3[6:4]; rd[3:1]; opcode[0] 
+  dot:   rd[12:10]; rb[9:7]; func3[6:4]; rd[3:1]; opcode[0]
+  dota:  ra[12:10]; rb[9:7]; func3[6:4]; rd[3:1]; opcode[0]
 
-### ( + código pouco impacto; + lógica -> impacto grande no espaço pequeno e na eficiência do processador;
-      complexidade de portas; e financeiro)
-trade off entre - lógica  e + complexidade da ISA
-
-  -> Opcodes associados às instruções:
+-> Opcodes associados às instruções:
   li: 0
   add, dot e dota: 1
   
-  -> func3 associados às instruções:
+-> func3 associados às instruções:
   add:  001
   dot:  010
   dota: 100
 
-## dot é semelhante ao dota com a diferença do registo de destino
+Justificação das Principais decisões tomadas:
 
-### modificar o dota !!!
-### fazer o func3 com 3 bits??? justificar
+-> Simplicidade do circuito e clareza do desenho:
+Na implementação do circuito optamos por unificar as operações dot e dota de modo a diminuir o número de portas lógicas e componentes dispendiosos, nomeadamente MUX's desnecessários, que consequentemente simplifica globalmente o circuto.
 
-# Justificação das Principais decisões tomadas:
+Ao nível da clareza do desenho, separamos o projeto em quatro áreas distintas: o banco dos registos, a área das decisões (onde associado à ALU decide o tipo operação a executar (li ou add/dot/dota)), a área da memória e a zona das operações.
 
-  -> bullets do enunciado!!
+-> Número de componentes:
 
+Visam o objetivo de minimizar o custo das operações, isto é, o nº de componentes envolvidos para uma tarefa, escolhemos usar 2 portas AND, 1 porta XOR e bit extenders para decidir o registo de destino ( o que diferencia ambas as operações) do dot e dota, deste modo evitamos adicionar um MUX que teria um impacto muito mais visivel face à escolha efetuada. AND e XOR são operações básicas e o bit extender usa somente 2 transistors; isto é que usam significativamente menos transistors que um MUX.
 
-# COMMENTS(A APAGAR NO FIM):
-DOT:
-  RD: rd
-  A: rs
-  B: rd + 1
-  D: rs + 1
+-> Expressividade da ISA:
+A ISA foi pensada para ser simples e regular de modo a simplificar o hardware ao máximo, no entanto, por vezes, pequenos ajustes na complexidade da ISA, permitem reduzir a lógica do circuito.
+Como tal:
+  - o opcode ocupa apenas 1 bit, o que nos permite aumentar o valor do         imediato no li;
+  - todas as operações tem o rd nos mesmos bits [3:1];
+  - o func3 ocupa 3 bits e distingue diretamente o add, dot e dota;
+  - acrescentamos rd[12:10] no dot, pois apesar da instrução assumir o         registo de destino por defeito, este detalhe permite-nos aproximar o       dot e dota;
 
-rd = (RD * A) + (B * D)
-
-DOTA:
-  SELA: rs1
-  SELB: rs1 + 1
-  SELC: rs2
-  SELD: rs2 + 1
-  SELR: rd
-
-rd = rd + (A*C) + (B*D)
+-> Extensibilidade da arquitetura:
+Ao nível da extensibilidade da arquitetura a simplicidade da ISA  conferida pelos bit livres permitem que o circuito receba mais instruções.
+Outra decisão relevante, é a opção de implementar o func3 com 3 bits para em vez de usar um multiplexer aproveitarmos o sinal destes 3 bits para estender o sinal, sinal esse a utilizar em operações lógicas básicas (mais baratas) que, são mais eficientes por natureza.
 
 
 
+
+( aumento a ISA; - MUX e complexidade do circuito)
+### ( + código pouco impacto; + lógica -> impacto grande no espaço pequeno e na eficiência do processador;
+      complexidade de portas; e financeiro)
+trade off entre - lógica  e + complexidade da ISA
 
 # sugestão: no li usar sign extension: senão como ponho -1??  Justificar isto no read.me
+
 # sinais de controlo: ALU, sel...
