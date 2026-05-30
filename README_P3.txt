@@ -35,6 +35,8 @@ Ao nível da clareza do desenho, separamos o projeto em quatro áreas distintas:
 
 Visam o objetivo de minimizar o custo das operações, isto é, o nº de componentes envolvidos para uma tarefa, escolhemos usar 2 portas AND, 1 porta XOR e bit extenders para decidir o registo de destino ( o que diferencia ambas as operações) do dot e dota, deste modo evitamos adicionar um MUX que teria um impacto muito mais visivel face à escolha efetuada. AND e XOR são operações básicas e o bit extender usa somente 2 transistors; isto é que usam significativamente menos transistors que um MUX.
 
+Na implementação do li, optamos por incluir um bit extender de modo a suportar valores negativos.
+
 -> Expressividade da ISA:
 A ISA foi pensada para ser simples e regular de modo a simplificar o hardware ao máximo, no entanto, por vezes, pequenos ajustes na complexidade da ISA, permitem reduzir a lógica do circuito.
 Como tal:
