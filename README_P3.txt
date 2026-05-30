@@ -29,7 +29,8 @@ Justificação das Principais decisões tomadas:
 -> Simplicidade do circuito e clareza do desenho:
 Na implementação do circuito optamos por unificar as operações dot e dota de modo a diminuir o número de portas lógicas e componentes dispendiosos, nomeadamente MUX's desnecessários, que consequentemente simplifica globalmente o circuto.
 
-Ao nível da clareza do desenho, separamos o projeto em quatro áreas distintas: o banco dos registos, a área das decisões (onde associado à ALU decide o tipo operação a executar (li ou add/dot/dota)), a área da memória e a zona das operações.
+Ao nível da clareza do desenho, separamos o projeto em quatro áreas distintas: o banco dos registos, a área das decisões (onde associado à ALU decide o tipo operação a executar (li ou add/dot/dota)), a área da memória e a zona das operações. 
+Para que o desenho seja mais percetível utilizamos túneis (etiquetas) que auxiliam na distinção das difenrentes áreas e facilitando a interpretação do projeto.
 
 -> Número de componentes:
 
