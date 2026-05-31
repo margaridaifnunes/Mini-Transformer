@@ -14,3 +14,5 @@ Questões para a aula prática:
   -> testar edge cases (de todas as instruções)
    
   ->  devo por e explicar cada sinal de controlo usado no projeto? (ALU, SELD, D,...)
+
+  -> Confirmar exemplos de codificação das instruções no README
