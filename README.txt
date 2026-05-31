@@ -71,10 +71,10 @@ Grupo constituído por:
 # Exemplos de codificação das diversas instruções em linguagem máquina:
 
 -> li: li R2,5 (immed = 000000000101, rd = 010, opcode = 0)
-   0000 0001 0101 0100
+   0000 0000 0101 0100
 -> add: add R0,R3 (rd = 000, rs = 011, func3 = 001, rd = 000, opcode = 1)
-   0000 1100 1000 0001
+   0000 0001 1001 0001
 -> dot: dot R0,R2 (rd = 000, rs = 010, func3 = 010, rd = 000, opcode = 1)
-   0000 1001 0000 0001
+   0000 0001 0010 0001
 -> dota: dota R0, R1, R3 (ra = 001, rb = 011, func3= 100, rd = 000, opcode = 1)
-   0010 1110 0000 0001
+   0000 0101 1100 0001
