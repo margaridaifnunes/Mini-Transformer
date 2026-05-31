@@ -9,8 +9,8 @@ Grupo constituído por:
 
 # Implementação da ISA:
   
-  -> Instruções:
-  li:                       immed[15:4]; rd[3:1]; opcode[0]
+  -> Formato das instruções:
+  li:                        immed[15:4]; rd[3:1]; opcode[0]
   add:   rd[12:10]; rb[9:7]; funct3[6:4]; rd[3:1]; opcode[0] 
   dot:   rd[12:10]; rb[9:7]; funct3[6:4]; rd[3:1]; opcode[0]
   dota:  ra[12:10]; rb[9:7]; funct3[6:4]; rd[3:1]; opcode[0]
