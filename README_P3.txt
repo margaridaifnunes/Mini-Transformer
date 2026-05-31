@@ -24,40 +24,57 @@ Grupo constituído por:
   dot:  010
   dota: 100
 
-Justificação das Principais decisões tomadas:
+===========================================================================
+
+# Justificação das Principais decisões tomadas:
 
 -> Simplicidade do circuito e clareza do desenho:
-Na implementação do circuito optamos por unificar as operações dot e dota de modo a diminuir o número de portas lógicas e componentes dispendiosos, nomeadamente MUX's desnecessários, que consequentemente simplifica globalmente o circuto.
 
-Ao nível da clareza do desenho, separamos o projeto em quatro áreas distintas: o banco dos registos, a área das decisões (onde associado à ALU decide o tipo operação a executar (li ou add/dot/dota)), a área da memória e a zona das operações. 
-Para que o desenho seja mais percetível utilizamos túneis (etiquetas) que auxiliam na distinção das difenrentes áreas e facilitando a interpretação do projeto.
+   Na implementação do circuito optamos por unificar as operações dot e dota de modo a
+   reduzir o número de portas lógicas e componentes dispendiosos, nomeadamente MUX's
+   desnecessários, que consequentemente simplifica globalmente o circuto,
+   sem introduzir ambiguidades.
+
+   Ao nível da clareza do desenho, separamos o projeto em quatro áreas distintas: o banco
+   de registos, a área das decisões (associada à ALU para distinguir
+   (li ou add/dot/dota)), a área da memória e a zona das operações. 
+   Para tornar o desenho mais legível utilizamos túneis, o que facilita a separação das 
+   áreas e a interpretação do circuito.
 
 -> Número de componentes:
-
-Visam o objetivo de minimizar o custo das operações, isto é, o nº de componentes envolvidos para uma tarefa, escolhemos usar 2 portas AND, 1 porta XOR e bit extenders para decidir o registo de destino ( o que diferencia ambas as operações) do dot e dota, deste modo evitamos adicionar um MUX que teria um impacto muito mais visivel face à escolha efetuada. AND e XOR são operações básicas e o bit extender usa somente 2 transistors; isto é que usam significativamente menos transistors que um MUX.
-
-Na implementação do li, optamos por incluir um bit extender de modo a suportar valores negativos.
+   Para minimizar o custo, utilizámos 2 portas AND, 1 XOR e bit extenders na seleção do
+   registo de destino (distinção entre dot e dota), evitando um MUX mais dispendioso. AND e
+   XOR são operações básicas, e o bit extender usa apenas 2 transístores, resultando num 
+   custo significativamente inferior ao de um MUX.
+  
+   Na implementação do li, optamos por incluir um bit extender de modo a suportar valores negativos.
 
 -> Expressividade da ISA:
-A ISA foi pensada para ser simples e regular de modo a simplificar o hardware ao máximo, no entanto, por vezes, pequenos ajustes na complexidade da ISA, permitem reduzir a lógica do circuito.
-Como tal:
-  - o opcode ocupa apenas 1 bit, o que nos permite aumentar o valor do         imediato no li;
-  - todas as operações tem o rd nos mesmos bits [3:1];
-  - o func3 ocupa 3 bits e distingue diretamente o add, dot e dota;
-  - acrescentamos rd[12:10] no dot, pois apesar da instrução assumir o         registo de destino por defeito, este detalhe permite-nos aproximar o       dot e dota;
+
+   A ISA foi pensada para ser simples e regular de modo a simplificar o hardware ao máximo, no
+   entanto, por vezes, pequenos ajustes na complexidade da ISA, permitem reduzir a lógica do circuito.
+   Como por exemplo:
+     - Opcode com 1 bit, permite-nos aumentar o valor do imediato no li;
+     - Todas as operações tem o rd nos mesmos bits [3:1];
+     - O func3 ocupa 3 bits e distingue diretamente o add, dot e dota;
+     - Inclusão do rd[12:10] no dot para aproximar o comportamento de dot e dota apesar da
+      instrução dot assumir o registo de destino por defeito;
 
 -> Extensibilidade da arquitetura:
-Ao nível da extensibilidade da arquitetura a simplicidade da ISA  conferida pelos bit livres permitem que o circuito receba mais instruções.
-Outra decisão relevante, é a opção de implementar o func3 com 3 bits para em vez de usar um multiplexer aproveitarmos o sinal destes 3 bits para estender o sinal, sinal esse a utilizar em operações lógicas básicas (mais baratas) que, são mais eficientes por natureza.
+   
+   A simplicidade da ISA e os bits livres permitem adicionar novas instruções. A escolha de
+   func3 com 3 bits evita o uso de MUX, aproveitando diretamente os sinais para operações lógicas
+   básicas, que são mais eficientes e menos dispendiosas por natureza.
 
+===========================================================================
 
+# Exemplos de codificação das diversas instruções em linguagem máquina:
 
-
-( aumento a ISA; - MUX e complexidade do circuito)
-### ( + código pouco impacto; + lógica -> impacto grande no espaço pequeno e na eficiência do processador;
-      complexidade de portas; e financeiro)
-trade off entre - lógica  e + complexidade da ISA
-
-# sugestão: no li usar sign extension: senão como ponho -1??  Justificar isto no read.me
-
-# sinais de controlo: ALU, sel...
+-> li: li R2,5 (immed = 000000000101, rd = 010, opcode = 0)
+   0000 0001 0101 0100
+-> add: add R0,R3 (rd = 000, rs = 011, func3 = 001, rd = 000, opcode = 1)
+   0000 1100 1000 0001
+-> dot: dot R0,R2 (rd = 000, rs = 010, func3 = 010, rd = 000, opcode = 1)
+   0000 1001 0000 0001
+-> dota: dota R0, R1, R3 (ra = 001, rb = 011, func3= 100, rd = 000, opcode = 1)
+   0010 1110 0000 0001
