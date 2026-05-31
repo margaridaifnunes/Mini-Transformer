@@ -6,6 +6,8 @@ ________________________________________________________________________________
 Questões para a aula prática:
 
   -> devemos tirar os probes no proj?
+
+  -> no README como sei se ultrapassei o limite de 1 página?
   
   -> testar edge cases (de todas as instruções)
    
