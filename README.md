@@ -1,6 +1,8 @@
 # Mini-Transformer
 Project for Introduction to Computer Architecture
 
+_________________________________________________________________________________________
+
 Questões para a aula prática:
 
   -> devemos tirar os probes no proj?
