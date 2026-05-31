@@ -19,4 +19,4 @@ ________________________________________________________________________________
 
 2nd Project -> p2.s
 
-3rd Project -> p3.cir e read.me
+3rd Project -> p3.cir e README.txt
