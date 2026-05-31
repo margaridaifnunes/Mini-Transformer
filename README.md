@@ -8,5 +8,9 @@ Project for Introduction to Computer Architecture
 3rd Project -> p3.cir e read.me
 
 Questões para a aula prática:
-  -> devemos tirar os probes no proj? como podemos testar?
+
+  -> devemos tirar os probes no proj?
+  
   -> testar edge cases (de todas as instruções)
+   
+  ->  devo por e explicar cada sinal de controlo usado no projeto? (ALU, SELD, D,...)
