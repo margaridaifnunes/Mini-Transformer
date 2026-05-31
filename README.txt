@@ -11,15 +11,15 @@ Grupo constituído por:
   
   -> Instruções:
   li:                       immed[15:4]; rd[3:1]; opcode[0]
-  add:   rd[12:10]; rb[9:7]; func3[6:4]; rd[3:1]; opcode[0] 
-  dot:   rd[12:10]; rb[9:7]; func3[6:4]; rd[3:1]; opcode[0]
-  dota:  ra[12:10]; rb[9:7]; func3[6:4]; rd[3:1]; opcode[0]
+  add:   rd[12:10]; rb[9:7]; funct3[6:4]; rd[3:1]; opcode[0] 
+  dot:   rd[12:10]; rb[9:7]; funct3[6:4]; rd[3:1]; opcode[0]
+  dota:  ra[12:10]; rb[9:7]; funct3[6:4]; rd[3:1]; opcode[0]
 
 -> Opcodes associados às instruções:
   li: 0
   add, dot e dota: 1
   
--> func3 associados às instruções:
+-> funct3 associados às instruções:
   add:  001
   dot:  010
   dota: 100
@@ -56,14 +56,14 @@ Grupo constituído por:
    Como por exemplo:
      - Opcode com 1 bit, permite-nos aumentar o valor do imediato no li;
      - Todas as operações tem o rd nos mesmos bits [3:1];
-     - O func3 ocupa 3 bits e distingue diretamente o add, dot e dota;
+     - O funct3 ocupa 3 bits e distingue diretamente o add, dot e dota;
      - Inclusão do rd[12:10] no dot para aproximar o comportamento de dot e dota apesar da
       instrução dot assumir o registo de destino por defeito;
 
 -> Extensibilidade da arquitetura:
    
    A simplicidade da ISA e os bits livres permitem adicionar novas instruções. A escolha de
-   func3 com 3 bits evita o uso de MUX, aproveitando diretamente os sinais para operações lógicas
+   funct3 com 3 bits evita o uso de MUX, aproveitando diretamente os sinais para operações lógicas
    básicas, que são mais eficientes e menos dispendiosas por natureza.
 
 ===========================================================================
@@ -72,9 +72,9 @@ Grupo constituído por:
 
 -> li: li R2,5 (immed = 000000000101, rd = 010, opcode = 0)
    0000 0000 0101 0100
--> add: add R0,R3 (rd = 000, rs = 011, func3 = 001, rd = 000, opcode = 1)
+-> add: add R0,R3 (rd = 000, rs = 011, funct3 = 001, rd = 000, opcode = 1)
    0000 0001 1001 0001
--> dot: dot R0,R2 (rd = 000, rs = 010, func3 = 010, rd = 000, opcode = 1)
+-> dot: dot R0,R2 (rd = 000, rs = 010, funct3 = 010, rd = 000, opcode = 1)
    0000 0001 0010 0001
--> dota: dota R0, R1, R3 (ra = 001, rb = 011, func3= 100, rd = 000, opcode = 1)
+-> dota: dota R0, R1, R3 (ra = 001, rb = 011, funct3= 100, rd = 000, opcode = 1)
    0000 0101 1100 0001
