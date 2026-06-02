@@ -11,6 +11,9 @@ Questões para a aula prática:
 
   -> COLOCAR A IMPLEMENTAÇÃO DE RESET: CUSTA EM TEMPO E ÁREA; Justificar
 
+  -> justificar quantyas instruções suporta o nosso processador consoante as difinições da ROM
+
+
 Falta:
 
   -> testar edge cases (de todas as instruções) DOT E DOTA ENCADEADOS NEGATIVOS;
