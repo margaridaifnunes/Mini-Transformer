@@ -14,7 +14,8 @@ Questões para a aula prática:
 Falta:
 
   -> testar edge cases (de todas as instruções) DOT E DOTA ENCADEADOS NEGATIVOS;
-  -> rever seções do circuito no readme
+  -> rever seções do circuito no readme;
+  -> rever justificações AND e MUX tem ambos 6 transitors...
 _________________________________________________________________________________________
 
 1st Project -> inclui os ficheiros: argmax.s, dot.s and select.s;
