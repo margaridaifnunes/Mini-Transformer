@@ -5,8 +5,6 @@ ________________________________________________________________________________
 
 Questões para a aula prática:
 
-  -> devemos tirar os probes no proj?
-
   -> no README como sei se ultrapassei o limite de 1 página?
    
   ->  devo por e explicar cada sinal de controlo usado no projeto? (ALU, SELD, D,...)
@@ -15,7 +13,8 @@ Questões para a aula prática:
 
 Falta:
 
-  -> testar edge cases (de todas as instruções) DOT E DOTA ENCADEADOS NEGATIVOS
+  -> testar edge cases (de todas as instruções) DOT E DOTA ENCADEADOS NEGATIVOS;
+  -> rever seções do circuito no readme
 _________________________________________________________________________________________
 
 1st Project -> inclui os ficheiros: argmax.s, dot.s and select.s;
