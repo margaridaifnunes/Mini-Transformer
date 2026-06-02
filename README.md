@@ -15,7 +15,7 @@ Falta:
 
   -> testar edge cases (de todas as instruções) DOT E DOTA ENCADEADOS NEGATIVOS;
   -> rever seções do circuito no readme;
-  -> rever justificações AND e MUX tem ambos 6 transitors...
+  -> rever justificações AND e MUX tem ambos 6 transitors... um mux de 4 entradas é pior que 2 mux's de 2 entradas pois o de 4 equivale a 3 mux's de 2 entradas
 _________________________________________________________________________________________
 
 1st Project -> inclui os ficheiros: argmax.s, dot.s and select.s;
