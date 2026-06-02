@@ -15,8 +15,6 @@ Questões para a aula prática:
 
 Falta:
 
-  -> Confirmar exemplos de codificação das instruções no README
-
   -> testar edge cases (de todas as instruções) DOT E DOTA ENCADEADOS NEGATIVOS
 _________________________________________________________________________________________
 
