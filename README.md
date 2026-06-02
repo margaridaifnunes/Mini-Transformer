@@ -9,7 +9,7 @@ Questões para a aula prática:
    
   ->  devo por e explicar cada sinal de controlo usado no projeto? (ALU, SELD, D,...)
 
-  -> que tipo de questões podemos esperar no teste prático?
+  -> que tipo de questões podemos esperar no teste prático? 3 PERGUNTAS DE ASSEMBLY E 1 DE LOGISIM
 
   -> COLOCAR A IMPLEMENTAÇÃO DE RESET: CUSTA EM TEMPO E ÁREA;
 
