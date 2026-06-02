@@ -11,7 +11,7 @@ Questões para a aula prática:
 
   -> COLOCAR A IMPLEMENTAÇÃO DE RESET: CUSTA EM TEMPO E ÁREA; Justificar
 
-  -> justificar quantyas instruções suporta o nosso processador consoante as difinições da ROM
+  -> justificar quantyas instruções suporta o nosso processador consoante as difinições da ROM; +ROM -> + TAMANHO DE PC; + RAM -> + tamanho do chip ( + preço)
 
 
 Falta:
