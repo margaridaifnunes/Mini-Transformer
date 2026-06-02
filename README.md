@@ -11,6 +11,8 @@ Questões para a aula prática:
 
   -> que tipo de questões podemos esperar no teste prático?
 
+  -> COLOCAR A IMPLEMENTAÇÃO DE RESET: CUSTA EM TEMPO E ÁREA;
+
 Falta:
 
   -> testar edge cases (de todas as instruções) DOT E DOTA ENCADEADOS NEGATIVOS;
