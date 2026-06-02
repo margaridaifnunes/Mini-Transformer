@@ -25,16 +25,19 @@ Grupo constituído por:
   dota: 100
 
 ===========================================================================
-# Sinais de controlo:
+# Sinais de controlo: (MUDAR OS NOMES NO PROJ)
 
-A
-B
-C
+A: RS1
+B: RS1 +1 
+C:
 D
 SELA
 SELB
 SELC
 SELD
+AUR
+LIR
+
 
 ===========================================================================
 
