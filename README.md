@@ -4,14 +4,12 @@ Project for Introduction to Computer Architecture
 _________________________________________________________________________________________
 
 Questões para a aula prática:
-
-  -> no README como sei se ultrapassei o limite de 1 página?
    
-  ->  devo por e explicar cada sinal de controlo usado no projeto? (ALU, SELD, D,...)
+  ->  devo por e explicar cada sinal de controlo usado no projeto? (ALU, SELD, D,...) sim!
 
   -> que tipo de questões podemos esperar no teste prático? 3 PERGUNTAS DE ASSEMBLY E 1 DE LOGISIM
 
-  -> COLOCAR A IMPLEMENTAÇÃO DE RESET: CUSTA EM TEMPO E ÁREA;
+  -> COLOCAR A IMPLEMENTAÇÃO DE RESET: CUSTA EM TEMPO E ÁREA; Justificar
 
 Falta:
 
