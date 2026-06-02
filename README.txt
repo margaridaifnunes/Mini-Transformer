@@ -25,6 +25,18 @@ Grupo constituído por:
   dota: 100
 
 ===========================================================================
+# Sinais de controlo:
+
+A
+B
+C
+D
+SELA
+SELB
+SELC
+SELD
+
+===========================================================================
 
 # Justificação das Principais decisões tomadas:
 
@@ -44,7 +56,7 @@ Grupo constituído por:
 -> Número de componentes:
    Para minimizar o custo, utilizámos 2 portas AND, 1 XOR e bit extenders na seleção do
    registo de destino (distinção entre dot e dota), evitando um MUX mais dispendioso. AND e
-   XOR são operações básicas, e o bit extender usa apenas 2 transístores, resultando num 
+   XOR são operações básicas, e o bit extender  não usa nenhum transistor, resultando num 
    custo significativamente inferior ao de um MUX.
   
    Na implementação do li, optamos por incluir um bit extender de modo a suportar valores negativos.
