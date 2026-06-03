@@ -16,8 +16,8 @@ Grupo constituído por:
   dota:  ra[12:10]; rb[9:7]; funct3[6:4]; rd[3:1]; opcode[0]
 
 -> Opcodes associados às instruções:
-  li: 0
-  add, dot e dota: 1
+  li: 1
+  add, dot e dota: 0
   
 -> funct3 associados às instruções:
   add:  001
