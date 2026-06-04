@@ -102,11 +102,11 @@ LI_INST: distinguido pelo bit do opcode, determina se executa li;
 
 # Exemplos de codificação das diversas instruções em linguagem máquina:
 
--> li: li R2,5 (immed = 000000000101, rd = 010, opcode = 0)
-   0000 0000 0101 0100
--> add: add R0,R3 (rd = 000, rs = 011, funct3 = 001, rd = 000, opcode = 1)
-   0000 0001 1001 0001
--> dot: dot R0,R2 (rd = 000, rs = 010, funct3 = 010, rd = 000, opcode = 1)
-   0000 0001 0010 0001
--> dota: dota R0, R1, R3 (ra = 001, rb = 011, funct3= 100, rd = 000, opcode = 1)
-   0000 0101 1100 0001
+-> li: li R2,5 (immed = 000000000101, rd = 010, opcode = 1)
+   0000 0000 0101 0101
+-> add: add R0,R3 (rd = 000, rs = 011, funct3 = 001, rd = 000, opcode = 0)
+   0000 0001 1001 0000
+-> dot: dot R0,R2 (rd = 000, rs = 010, funct3 = 010, rd = 000, opcode = 0)
+   0000 0001 0010 0000
+-> dota: dota R0, R1, R3 (ra = 001, rb = 011, funct3= 100, rd = 000, opcode = 0)
+   0000 0101 1100 0000
