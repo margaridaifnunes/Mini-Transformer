@@ -45,8 +45,7 @@ LI_INST: distinguido pelo bit do opcode, determina se executa li;
 -> Simplicidade do circuito e clareza do desenho:
 
    Na implementação do circuito optamos por unificar as operações dot e dota de modo a
-   reduzir o número de portas lógicas e componentes dispendiosos, nomeadamente MUX's
-   desnecessários, que consequentemente simplifica globalmente o circuto,
+   reduzir o número de portas lógicas e componentes dispendiosos, nomeadamente MUX's com elevado número de portas, que                   consequentemente simplifica globalmente o circuto,
    sem introduzir ambiguidades.
 
    Ao nível da clareza do desenho, separamos o projeto em quatro áreas distintas: 
@@ -58,15 +57,15 @@ LI_INST: distinguido pelo bit do opcode, determina se executa li;
    áreas e a interpretação do circuito.
 
 -> Número de componentes:
-   Para minimizar o custo, utilizámos 2 portas AND, 1 XOR e bit extenders na seleção do
-   registo de destino (distinção entre dot e dota), evitando um MUX mais dispendioso. AND e
-   XOR são operações básicas, e o bit extender  não usa nenhum transistor, resultando num 
-   custo significativamente inferior ao de um MUX.
-  
-   Na implementação do li, optamos por incluir um bit extender de modo a suportar valores negativos.
+   Para minimizar o custo, utilizamos 2 MUX's pois é mais barato usar 2 MUX's de 2 entradas e 1 bit de seleção do que 1 MUX de 4 entradas e 2 bits de seleção, já que equivale a 3 MUX de 2 entradas e 1 bit de seleção.
+
+Evitamos usar dois somadores ao ligar diretamente por cabos cabos entre o MUX referente a A/B e C/D. Ligamos portanto a entrada n de B às entradas n+1 de A, à exceção da última entrada de B que está ligada à entrada 0 de A; a mesma lógica aplica-se a C/D.
+
+
+Na implementação do li, optamos por incluir um bit extender pois é um componente que não usa nenhum transistor e nos dos possibilita armazenar valores negativos.
 
    Visando apresentar uma resolução mais completa, introduzimos um reset para acaltelar extensões do
-   computador tendo a capacidade de fazer reset geral do CPU , algo que pode ser útil em caso de ocorrência de anomalias durante um processo de testagem de um chip.
+   computador tendo a capacidade de fazer reset geral do CPU, algo que pode ser útil em caso de ocorrência de anomalias durante um processo de testagem de um chip.
 
 -> Expressividade da ISA:
 
@@ -77,7 +76,7 @@ LI_INST: distinguido pelo bit do opcode, determina se executa li;
      - Todas as operações tem o rd nos mesmos bits [3:1];
      - O funct3 ocupa 3 bits e distingue diretamente o add, dot e dota;
      - Inclusão do rd[12:10] no dot para aproximar o comportamento de dot e dota apesar da
-      instrução dot assumir o registo de destino por defeito;
+       instrução dot assumir o registo de destino por defeito;
 
 -> Extensibilidade da arquitetura:
    
