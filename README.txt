@@ -25,19 +25,18 @@ Grupo constituído por:
   dota: 100
 
 ===========================================================================
-# Sinais de controlo: (MUDAR OS NOMES NO PROJ)
+# Sinais de controlo:
 
-A: RS1
-B: RS1 +1 
-C:
-D
-SELA
-SELB
-SELC
-SELD
-AUR
-LIR
-
+SELA: bit de seleção do registo A; (A: RS1)
+SELB: bit de seleção do registo B; (B: RS1 + 1)
+SELC: bit de seleção do registo C; (C: RS2)
+SELD: bit de seleção do registo D; (D: RS2 + 1)
+SELR: seleciona o registo de escrita; (RD: RD)
+SELRD: bit de seleção do registo RD;
+ADD_INST: bit de seleção que determina, consoante o output do 1º bit (na ALU), se é um add;
+DOT_INST: bit de seleção que determina, consoante o output do 2º bit (na ALU), se é um dot;
+DOTA_INST: bit de seleção que determina, consoante o output do 3º bit (na ALU), se é um dot;
+LI_INST: distinguido pelo bit do opcode, determina se executa li;
 
 ===========================================================================
 
@@ -93,3 +92,14 @@ LIR
    0000 0001 0010 0001
 -> dota: dota R0, R1, R3 (ra = 001, rb = 011, funct3= 100, rd = 000, opcode = 1)
    0000 0101 1100 0001
+
+
+
+################################### APAGAR:
+-> que tipo de questões podemos esperar no teste prático? 3 PERGUNTAS DE ASSEMBLY E 1 DE LOGISIM
+
+-> COLOCAR A IMPLEMENTAÇÃO DE RESET: CUSTA EM TEMPO E ÁREA; Justificar
+
+-> justificar quantyas instruções suporta o nosso processador consoante as difinições da ROM; +ROM -> + TAMANHO DE PC; + RAM -> + tamanho do chip ( + preço); porque o tamanho de rom? e cosnequentemente pk o tamanho do contador? extensibilidade: se fosso adicionar um jump o que teriamos de alterar?? (dar um exemplo) jump fica limitado pelo contador; e se fosse um jal? mais que 16 é mau para fazer jumps; menos que 256 é poucas isntruções...; se quisesse somar 4 registos, como conseguia somar os 4 em single-cicle??(extensibilidade) e como configurava? 8extensão é colocar mais uma instrução
+
+com 256 na rom consigo fazer multiplicação de matrizes 22 e de 44 (ver o limite que conseguimos fazer e expor na extensibilidade) ver nº de dots envolvidos e de add's Impacto da ROM:
