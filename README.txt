@@ -49,9 +49,11 @@ LI_INST: distinguido pelo bit do opcode, determina se executa li;
    desnecessários, que consequentemente simplifica globalmente o circuto,
    sem introduzir ambiguidades.
 
-   Ao nível da clareza do desenho, separamos o projeto em quatro áreas distintas: o banco
-   de registos, a área das decisões (associada à ALU para distinguir
-   (li ou add/dot/dota)), a área da memória e a zona das operações. 
+   Ao nível da clareza do desenho, separamos o projeto em quatro áreas distintas: 
+   - Área dos registos (banco de registos);
+   - Área de descodificação (distinguir li ou add/dot/dota);
+   - Área da memório (leitura das intruções);
+   - Área das operações;
    Para tornar o desenho mais legível utilizamos túneis, o que facilita a separação das 
    áreas e a interpretação do circuito.
 
@@ -62,6 +64,9 @@ LI_INST: distinguido pelo bit do opcode, determina se executa li;
    custo significativamente inferior ao de um MUX.
   
    Na implementação do li, optamos por incluir um bit extender de modo a suportar valores negativos.
+
+   Visando apresentar uma resolução mais completa, introduzimos um reset para acaltelar extensões do
+   computador tendo a capacidade de fazer reset geral do CPU , algo que pode ser útil em caso de ocorrência de anomalias durante um processo de testagem de um chip.
 
 -> Expressividade da ISA:
 
@@ -80,6 +85,8 @@ LI_INST: distinguido pelo bit do opcode, determina se executa li;
    funct3 com 3 bits evita o uso de MUX, aproveitando diretamente os sinais para operações lógicas
    básicas, que são mais eficientes e menos dispendiosas por natureza.
 
+   No que toca ao tamanho da ROM, escolhemos receber até 256 instruções, o que no âmbito académico já é um número considerável. Isto permite-nos efetuar multiplicação de matrizes 2*2  e 4*4. Além disso, quanto mais instruções recebermos, mais espaço (área) ocupa a memória dentro do CPU, aumentando o seu valor de mercado. A nível de jumps, também nos permite saltar um número razoável de instruções. Associado à ROM, temos um contador de 8 bits, pois dada a restrição imposta à memória (2^8 = 256) é o nº máximo de bits que este comporta, assim permite-nos aceder a qualquer endereço da ROM diretamente.
+
 ===========================================================================
 
 # Exemplos de codificação das diversas instruções em linguagem máquina:
@@ -92,14 +99,3 @@ LI_INST: distinguido pelo bit do opcode, determina se executa li;
    0000 0001 0010 0001
 -> dota: dota R0, R1, R3 (ra = 001, rb = 011, funct3= 100, rd = 000, opcode = 1)
    0000 0101 1100 0001
-
-
-
-################################### APAGAR:
--> que tipo de questões podemos esperar no teste prático? 3 PERGUNTAS DE ASSEMBLY E 1 DE LOGISIM
-
--> COLOCAR A IMPLEMENTAÇÃO DE RESET: CUSTA EM TEMPO E ÁREA; Justificar
-
--> justificar quantyas instruções suporta o nosso processador consoante as difinições da ROM; +ROM -> + TAMANHO DE PC; + RAM -> + tamanho do chip ( + preço); porque o tamanho de rom? e cosnequentemente pk o tamanho do contador? extensibilidade: se fosso adicionar um jump o que teriamos de alterar?? (dar um exemplo) jump fica limitado pelo contador; e se fosse um jal? mais que 16 é mau para fazer jumps; menos que 256 é poucas isntruções...; se quisesse somar 4 registos, como conseguia somar os 4 em single-cicle??(extensibilidade) e como configurava? 8extensão é colocar mais uma instrução
-
-com 256 na rom consigo fazer multiplicação de matrizes 22 e de 44 (ver o limite que conseguimos fazer e expor na extensibilidade) ver nº de dots envolvidos e de add's Impacto da ROM:
