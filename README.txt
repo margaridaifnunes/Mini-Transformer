@@ -45,7 +45,8 @@ LI_INST: distinguido pelo bit do opcode, determina se executa li;
 -> Simplicidade do circuito e clareza do desenho:
 
    Na implementação do circuito optamos por unificar as operações dot e dota de modo a
-   reduzir o número de portas lógicas e componentes dispendiosos, nomeadamente MUX's com elevado número de portas, que                   consequentemente simplifica globalmente o circuto,
+   reduzir o número de portas lógicas e componentes dispendiosos, nomeadamente MUX's com
+   elevado número de portas, que consequentemente simplifica globalmente o circuto,
    sem introduzir ambiguidades.
 
    Ao nível da clareza do desenho, separamos o projeto em quatro áreas distintas: 
@@ -57,15 +58,21 @@ LI_INST: distinguido pelo bit do opcode, determina se executa li;
    áreas e a interpretação do circuito.
 
 -> Número de componentes:
-   Para minimizar o custo, utilizamos 2 MUX's pois é mais barato usar 2 MUX's de 2 entradas e 1 bit de seleção do que 1 MUX de 4 entradas e 2 bits de seleção, já que equivale a 3 MUX de 2 entradas e 1 bit de seleção.
 
-Evitamos usar dois somadores ao ligar diretamente por cabos cabos entre o MUX referente a A/B e C/D. Ligamos portanto a entrada n de B às entradas n+1 de A, à exceção da última entrada de B que está ligada à entrada 0 de A; a mesma lógica aplica-se a C/D.
+   Para minimizar o custo, utilizamos 2 MUX's pois é mais barato usar 2 MUX's de 2 entradas
+   e 1 bit de seleção do que 1 MUX de 4 entradas e 2 bits de seleção, já que equivale a 3 MUX 
+   de 2 entradas e 1 bit de seleção.
 
+   Evitamos usar dois somadores ao ligar diretamente por cabos cabos entre o MUX referente a A/B
+   e C/D. Ligamos portanto a entrada n de B às entradas n+1 de A, à exceção da última entrada de B
+   que está ligada à entrada 0 de A; a mesma lógica aplica-se a C/D.
 
-Na implementação do li, optamos por incluir um bit extender pois é um componente que não usa nenhum transistor e nos dos possibilita armazenar valores negativos.
+   Na implementação do li, optamos por incluir um bit extender pois é um componente que não usa nenhum
+  transistor e nos dos possibilita armazenar valores negativos.
 
    Visando apresentar uma resolução mais completa, introduzimos um reset para acaltelar extensões do
-   computador tendo a capacidade de fazer reset geral do CPU, algo que pode ser útil em caso de ocorrência de anomalias durante um processo de testagem de um chip.
+   computador tendo a capacidade de fazer reset geral do CPU, algo que pode ser útil em caso de ocorrência
+   de anomalias durante um processo de testagem de um chip.
 
 -> Expressividade da ISA:
 
@@ -84,7 +91,12 @@ Na implementação do li, optamos por incluir um bit extender pois é um compone
    funct3 com 3 bits evita o uso de MUX, aproveitando diretamente os sinais para operações lógicas
    básicas, que são mais eficientes e menos dispendiosas por natureza.
 
-   No que toca ao tamanho da ROM, escolhemos receber até 256 instruções, o que no âmbito académico já é um número considerável. Isto permite-nos efetuar multiplicação de matrizes 2*2  e 4*4. Além disso, quanto mais instruções recebermos, mais espaço (área) ocupa a memória dentro do CPU, aumentando o seu valor de mercado. A nível de jumps, também nos permite saltar um número razoável de instruções. Associado à ROM, temos um contador de 8 bits, pois dada a restrição imposta à memória (2^8 = 256) é o nº máximo de bits que este comporta, assim permite-nos aceder a qualquer endereço da ROM diretamente.
+   No que toca ao tamanho da ROM, escolhemos receber até 256 instruções, o que no âmbito académico já
+   é um número considerável. Isto permite-nos efetuar multiplicação de matrizes 2*2  e 4*4. Além disso,
+   quanto mais instruções recebermos, mais espaço (área) ocupa a memória dentro do CPU, aumentando o seu
+   valor de mercado. A nível de jumps, também nos permite saltar um número razoável de instruções. Associado
+   à ROM, temos um contador de 8 bits, pois dada a restrição imposta à memória (2^8 = 256) é o nº máximo de
+   bits que este comporta, assim permite-nos aceder a qualquer endereço da ROM diretamente.
 
 ===========================================================================
 
