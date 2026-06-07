@@ -89,7 +89,9 @@ LI_INST: distinguido pelo bit do opcode, determina se executa li;
    
    A simplicidade da ISA e os bits livres permitem adicionar novas instruções. A escolha de
    funct3 com 3 bits evita o uso de MUX, aproveitando diretamente os sinais para operações lógicas
-   básicas, que são mais eficientes e menos dispendiosas por natureza.
+   básicas, que são mais eficientes e menos dispendiosas por natureza. Estes 3 bits do func3 também 
+   possibilitam uma possivel extensão de operações nesta arquitetura, mesmo que agora não estajam a ser
+   totalmente utilizados.
 
    No que toca ao tamanho da ROM, escolhemos receber até 256 instruções, o que no âmbito académico já
    é um número considerável. Isto permite-nos efetuar multiplicação de matrizes 2*2  e 4*4. Além disso,
@@ -98,7 +100,7 @@ LI_INST: distinguido pelo bit do opcode, determina se executa li;
    à ROM, temos um contador de 8 bits, pois dada a restrição imposta à memória (2^8 = 256) é o nº máximo de
    bits que este comporta, assim permite-nos aceder a qualquer endereço da ROM diretamente.
 
-   Se, de futuro se pretendesse, por exemplo se em vez do add,fazer  um sub rd,ra,rb só teriamos de inverter o
+   Se, de futuro se pretendesse, por exemplo se em vez do add,fazer um sub rd,ra,rb só teriamos de inverter o
    operando B para fazer (a + (-b)), isto é, em termos práticos bastaria acrescentar um not, um bit
    extender e um somador para fazer como no complemento para 2.
 
