@@ -98,6 +98,10 @@ LI_INST: distinguido pelo bit do opcode, determina se executa li;
    à ROM, temos um contador de 8 bits, pois dada a restrição imposta à memória (2^8 = 256) é o nº máximo de
    bits que este comporta, assim permite-nos aceder a qualquer endereço da ROM diretamente.
 
+   Se, de futuro se pretendesse, por exemplo se em vez do add,fazer  um sub rd,ra,rb só teriamos de inverter o
+   operando B para fazer (a + (-b)), isto é, em termos práticos bastaria acrescentar um not, um bit
+   extender e um somador para fazer como no complemento para 2.
+
 ===========================================================================
 
 # Exemplos de codificação das diversas instruções em linguagem máquina:
