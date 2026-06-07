@@ -54,8 +54,9 @@ LI_INST: distinguido pelo bit do opcode, determina se executa li;
    - Área de descodificação (distinguir li ou add/dot/dota);
    - Área da memório (leitura das intruções);
    - Área das operações;
+
    Para tornar o desenho mais legível utilizamos túneis, o que facilita a separação das 
-   áreas e a interpretação do circuito.
+   áreas previamente definidas e a interpretação do circuito.
 
 -> Número de componentes:
 
