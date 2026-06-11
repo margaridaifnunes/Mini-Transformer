@@ -43,7 +43,7 @@ exit:
 argmax:
   ble a2, zero, code50      # checks if the array length is 0
   li t0, 0                  # inicializes the counter
-  li s1,1                   # initializes teh axiliary for the indexes
+  li s1,0                   # initializes teh axiliary for the indexes
   li s2,0                   # initializes the auxiliary that stores the largest
   add t0, a1, zero          # sets the pointes (t0) to the pointer to the array
   lw t3, 0(a1)              # loads the first word (int in this case)
