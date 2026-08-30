@@ -1,4 +1,4 @@
-# Mini-Transformer: Project for Introduction to Computer Architecture
+# Mini-Transformer
 
 1st Project -> argmax.s, dots.s and select.s;
 
